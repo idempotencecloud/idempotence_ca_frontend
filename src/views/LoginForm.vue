@@ -56,7 +56,7 @@
       <p class="mt-10 text-center text-sm text-gray-500">
         New to Idempotence CA?
         {{ ' ' }}
-        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Register a new company</a>
+        <a href="/signup" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Register a new company</a>
       </p>
     </div>
   </div>

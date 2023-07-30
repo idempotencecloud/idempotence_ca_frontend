@@ -1,14 +1,17 @@
+<!-- src/App.vue -->
 <template>
-  <LoginForm msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <!-- Your common layout/header/footer goes here -->
+
+    <!-- The router outlet where components will be rendered -->
+    <router-view></router-view>
+
+    <!-- Your common layout/footer goes here -->
+  </div>
 </template>
 
 <script>
-import LoginForm from './components/LoginForm.vue'
-
 export default {
-  name: 'App',
-  components: {
-    LoginForm
-  }
-}
+  // Component logic goes here
+};
 </script>
