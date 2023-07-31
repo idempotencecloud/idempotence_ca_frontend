@@ -7,7 +7,10 @@
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Register a New Company</h2>
       <p class="mt-2 text-lg leading-8 text-gray-600">Let's begin by verifying your email.</p>
     </div>
-    <form @submit.prevent="handleSubmit" action="#" method="POST" class="mx-auto mt-16 max-w-xl sm:mt-20">
+    <div class="mx-auto mt-16 max-w-xl sm:mt-20" v-if="emailSent">
+      <p class="text-center">{{ message }}</p>
+    </div>
+    <form @submit.prevent="handleSubmit" action="#" method="POST" class="mx-auto mt-16 max-w-xl sm:mt-20" v-else>
       <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
         <div class="sm:col-span-2">
           <label for="email" class="block text-sm font-semibold leading-6 text-gray-900">Email</label>
@@ -25,17 +28,38 @@
 
 <script>
 import { ref } from 'vue';
+import httpClient from '../http-service'
 
 export default {
   setup() {
     const email = ref('');
+    const emailSent = ref(false);
+    const message = ref('');
 
-    function handleSubmit() {
-      email.value = 'oh-my@e.com';
+    async function handleSubmit() {
+      try {
+        // Perform the POST request using Axios and the HTTP service
+        const response = await httpClient.post('/sign-up', {
+          emailAddress: email.value,
+        });
+
+        // Handle the successful response
+        console.log('POST request successful:', response.data);
+
+        // Optionally, you can reset the form fields after a successful request
+        email.value = '';
+        emailSent.value = true;
+        message.value = response.data.message;
+      } catch (error) {
+        // Handle errors
+        console.error('Error performing POST request:', error);
+      }
     }
 
     return {
       email,
+      emailSent,
+      message,
       handleSubmit,
     };
   },
