@@ -10,10 +10,10 @@
       />
     </div>
     <div v-if="showCompanyForm">
-      <IndividualInfoForm />
+      <IndividualInfoForm :handle-submit="individualFormSubmission" />
     </div>
     <div v-else>
-      <IndividualInfoForm />
+      <IndividualInfoForm :handle-submit="individualFormSubmission" />
     </div>
   </div>
 </template>
@@ -27,9 +27,15 @@ export default {
     },
     setup() {
         const showCompanyForm = ref(false);
-            return {
-                showCompanyForm
-            }
+        function individualFormSubmission(e) {
+          console.log("individualFormSubmission")
+          console.log(e)
+          showCompanyForm.value = true
+        }
+        return {
+            showCompanyForm,
+            individualFormSubmission
+        }
     }
 }
 </script>
