@@ -10,34 +10,79 @@
       />
     </div>
     <div v-if="showCompanyForm">
-      <CompanyInfoForm :handle-submit="individualFormSubmission" />
+      <CompanyInfoForm :handle-submit="companyFormSubmission" />
     </div>
     <div v-else>
       <IndividualInfoForm :handle-submit="individualFormSubmission" />
     </div>
   </div>
 </template>
-  
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import httpClient from '../http-service';
+import { useRoute } from 'vue-router';
+
+let onboardingToken = ''
+onMounted(() => {
+  // Access the onboarding_token parameter from the route object
+  const route = useRoute();
+  onboardingToken = route.params.onboarding_token;
+});
+
+const showCompanyForm = ref(false);
+const kebabCaseRegex = /-./g
+let submittedInfo = {}
+function individualFormSubmission(e) {
+  console.log("individualFormSubmission")
+  console.log(e)
+  showCompanyForm.value = true
+  for(let ele of e.srcElement) {
+    submittedInfo[ele.id.replace(kebabCaseRegex, x=>x[1].toUpperCase())] = ele.value
+  }
+  if(submittedInfo["province"]) {
+    submittedInfo["state"] = submittedInfo["province"]
+  }
+  if(submittedInfo["postalCode"]) {
+    submittedInfo["zipCode"] = submittedInfo["postalCode"]
+  }
+}
+async function companyFormSubmission(e) {
+  console.log("companyFormSubmission")
+  console.log(e)
+  submittedInfo["company"] = {}
+  for(let ele of e.srcElement) {
+    submittedInfo["company"][ele.id.replace(kebabCaseRegex, x=>x[1].toUpperCase())] = ele.value
+  }
+  //Concat street address
+  submittedInfo["company"]["streetAddress"] = submittedInfo["company"]["mailingAddress1"] + " " + submittedInfo["company"]["mailingAddress2"]
+  //Translate postal code
+  if(submittedInfo["company"]["province"]) {
+    submittedInfo["company"]["state"] = submittedInfo["company"]["province"]
+  }
+  if(submittedInfo["company"]["postalCode"]) {
+    submittedInfo["company"]["zipCode"] = submittedInfo["company"]["postalCode"]
+  }
+  submittedInfo["onboardingTicket"] = onboardingToken
+  try {
+      // Perform the POST request using Axios and the HTTP service
+      const response = await httpClient.post('/onboard', submittedInfo);
+
+      // Handle the successful response
+      console.log('POST request successful:', response.data);
+    } catch (error) {
+      // Handle errors
+      console.error('Error performing POST request:', error);
+    }
+}
+</script>
 <script>
-import { ref } from 'vue';
 import IndividualInfoForm from '../components/InidividualInfoForm.vue'
 import CompanyInfoForm from '../components/CompanyInfoForm.vue'
 export default {
     components: {
         IndividualInfoForm,
         CompanyInfoForm
-    },
-    setup() {
-        const showCompanyForm = ref(false);
-        function individualFormSubmission(e) {
-          console.log("individualFormSubmission")
-          console.log(e)
-          showCompanyForm.value = true
-        }
-        return {
-            showCompanyForm,
-            individualFormSubmission
-        }
     }
 }
 </script>
