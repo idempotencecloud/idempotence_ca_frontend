@@ -10,7 +10,7 @@
       />
     </div>
     <div v-if="showCompanyForm">
-      <IndividualInfoForm :handle-submit="individualFormSubmission" />
+      <CompanyInfoForm :handle-submit="individualFormSubmission" />
     </div>
     <div v-else>
       <IndividualInfoForm :handle-submit="individualFormSubmission" />
@@ -21,9 +21,11 @@
 <script>
 import { ref } from 'vue';
 import IndividualInfoForm from '../components/InidividualInfoForm.vue'
+import CompanyInfoForm from '../components/CompanyInfoForm.vue'
 export default {
     components: {
-        IndividualInfoForm
+        IndividualInfoForm,
+        CompanyInfoForm
     },
     setup() {
         const showCompanyForm = ref(false);

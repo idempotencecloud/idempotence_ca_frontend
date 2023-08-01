@@ -69,9 +69,9 @@
             </select>
           </div>
           <input
-            id="zip-code"
+            id="drivers-lisence"
             type="text"
-            name="zip-code"
+            name="drivers-lisence"
             autocomplete="off"
             class="block w-full rounded-md border-0 px-3.5 py-2 pl-28 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           >
@@ -164,6 +164,24 @@
       </div>
       <div class="sm:col-span-2">
         <label
+          for="country"
+          class="block text-sm font-semibold leading-6 text-gray-900"
+        >Country</label>
+        <select
+              id="country"
+              name="country"
+              class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              @change="countryChange">
+              <option
+                v-for="country in countries"
+                :key="country.name"
+              >
+                {{ country.name }}
+              </option>
+        </select>
+      </div>
+      <div class="sm:col-span-2">
+        <label
           for="city"
           class="block text-sm font-semibold leading-6 text-gray-900"
         >City</label>
@@ -175,7 +193,7 @@
           class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         >
       </div>
-      <div class="sm:col-span-2">
+      <div v-if="usSelected" class="sm:col-span-2">
         <label
           for="state"
           class="block text-sm font-semibold leading-6 text-gray-900"
@@ -200,14 +218,40 @@
             </select>
           </div>
           <input
-            id="drivers-lisence"
+            id="zip-code"
             placeholder="Zip Code"
             type="text"
-            name="drivers-lisence"
+            name="zip-code"
             autocomplete="off"
             class="block w-full rounded-md border-0 px-3.5 py-2 pl-28 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           >
         </div>
+      </div>
+      <div v-if="!usSelected" class="sm:col-span-2">
+        <label
+          for="province"
+          class="block text-sm font-semibold leading-6 text-gray-900"
+        >State / Province</label>
+        <input
+          id="province"
+          type="text"
+          name="province"
+          autocomplete="off"
+          class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        >
+      </div>
+      <div v-if="!usSelected" class="sm:col-span-2">
+        <label
+          for="postal-code"
+          class="block text-sm font-semibold leading-6 text-gray-900"
+        >Postal Code</label>
+        <input
+          id="postal-code"
+          type="text"
+          name="postal-code"
+          autocomplete="off"
+          class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        >
       </div>
     </div>
     <div class="mt-10">
@@ -221,9 +265,21 @@
   </form>
 </template>
   
-  <script setup>
-  import { usStates } from '../data/states.js';
-  </script>
+<script setup>
+import { usStates } from '../data/states.js';
+import { countries } from '../data/countries.js';
+import {ref} from 'vue'
+
+const usSelected = ref(true)
+
+function countryChange(e) {
+  if (e.target.value == countries[0].name) {
+    usSelected.value = true
+  } else {
+    usSelected.value = false
+  }
+}
+</script>
 
 <script>
 export default {
