@@ -13,22 +13,20 @@
       <CompanyInfoForm :handle-submit="companyFormSubmission" />
     </div>
     <div v-else>
-      <IndividualInfoForm :handle-submit="individualFormSubmission" />
+      <IndividualInfoForm :handle-submit="individualFormSubmission" :email="email" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import httpClient from '../http-service';
 import { useRoute } from 'vue-router';
 
-let onboardingToken = ''
-onMounted(() => {
-  // Access the onboarding_token parameter from the route object
-  const route = useRoute();
-  onboardingToken = route.params.onboarding_token;
-});
+const route = useRoute();
+const email = ref(route.params.email)
+
+const onboardingToken = route.params.onboarding_token;
 
 const showCompanyForm = ref(false);
 const kebabCaseRegex = /-./g

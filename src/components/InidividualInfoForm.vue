@@ -54,10 +54,12 @@
         <div class="mt-2.5">
           <input
             id="email-address"
+            v-model="email"
             type="email"
             name="email-address"
             autocomplete="email"
             required="true"
+            disabled="true"
             class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           >
         </div>
@@ -280,9 +282,22 @@
 <script setup>
 import { usStates } from '../data/states.js';
 import { countries } from '../data/countries.js';
-import { ref } from 'vue'
+import { ref, defineProps } from 'vue'
 
 const usSelected = ref(true)
+const props = defineProps({
+  'email': {
+    type: String,
+    default: 'Test',
+  },
+  'handleSubmit': {
+    type: Function,
+    default: () => {},
+  }
+});
+
+// Use a reactive ref to store the value of the email prop
+const email = ref(props.email);
 
 function countryChange(e) {
   if (e.target.value == countries[0].name) {
@@ -291,16 +306,4 @@ function countryChange(e) {
     usSelected.value = false
   }
 }
-</script>
-
-<script>
-export default {
-  // Define the 'buttonClickHandler' prop to receive the function from the parent
-  props: {
-    handleSubmit: {
-      type: Function,
-      default: () => {},
-    },
-  },
-};
 </script>

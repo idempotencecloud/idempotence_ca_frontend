@@ -10,7 +10,7 @@ import OnboardingForm from '../views/OnboardingForm.vue';
 const routes = [
   { path: '/', component: LoginForm },
   { path: '/signup', component: SignupForm },
-  { path: '/onboard/:onboarding_token', component: OnboardingForm },
+  { path: '/onboard/:onboarding_token/:email', component: OnboardingForm },
 ];
 
 // Create the router instance
