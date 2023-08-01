@@ -33,19 +33,29 @@ onMounted(() => {
 const showCompanyForm = ref(false);
 const kebabCaseRegex = /-./g
 let submittedInfo = {}
+let submittedElements = {}
 function individualFormSubmission(e) {
   console.log("individualFormSubmission")
   console.log(e)
-  showCompanyForm.value = true
   for(let ele of e.srcElement) {
     submittedInfo[ele.id.replace(kebabCaseRegex, x=>x[1].toUpperCase())] = ele.value
+    submittedElements[ele.id] = ele
   }
+  submittedElements["form-submit"].disabled = true
   if(submittedInfo["province"]) {
     submittedInfo["state"] = submittedInfo["province"]
   }
   if(submittedInfo["postalCode"]) {
     submittedInfo["zipCode"] = submittedInfo["postalCode"]
   }
+  if(submittedInfo['password'] != submittedInfo['confirmPassword']) {
+    alert('Your password confirmation does not match.')
+    submittedElements['password'].focus()
+    submittedElements["form-submit"].disabled = false
+    return
+  }
+  submittedElements["form-submit"].disabled = false
+  showCompanyForm.value = true
 }
 async function companyFormSubmission(e) {
   console.log("companyFormSubmission")
@@ -53,7 +63,9 @@ async function companyFormSubmission(e) {
   submittedInfo["company"] = {}
   for(let ele of e.srcElement) {
     submittedInfo["company"][ele.id.replace(kebabCaseRegex, x=>x[1].toUpperCase())] = ele.value
+    submittedElements[ele.id] = ele
   }
+  submittedElements["form-submit"].disabled = true
   //Concat street address
   submittedInfo["company"]["streetAddress"] = submittedInfo["company"]["mailingAddress1"] + " " + submittedInfo["company"]["mailingAddress2"]
   //Translate postal code
@@ -72,6 +84,7 @@ async function companyFormSubmission(e) {
       console.log('POST request successful:', response.data);
     } catch (error) {
       // Handle errors
+      submittedElements["form-submit"].disabled = false
       console.error('Error performing POST request:', error);
     }
 }

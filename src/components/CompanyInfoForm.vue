@@ -23,6 +23,7 @@
           id="company-name"
           type="text"
           name="company-name"
+          required="true"
           autocomplete="off"
           class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         >
@@ -36,6 +37,7 @@
           id="department"
           type="text"
           name="department"
+          required="true"
           autocomplete="off"
           class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         >
@@ -79,6 +81,7 @@
         <input
           id="mailing-address-1"
           type="text"
+          required="true"
           name="mailing-address-1"
           autocomplete="off"
           class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -105,6 +108,7 @@
         <input
           id="city"
           type="text"
+          required="true"
           name="city"
           autocomplete="off"
           class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -138,6 +142,7 @@
             id="zip-code"
             placeholder="Zip Code"
             type="text"
+            required="true"
             name="zip-code"
             autocomplete="off"
             class="block w-full rounded-md border-0 px-3.5 py-2 pl-28 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -153,6 +158,7 @@
           id="province"
           type="text"
           name="province"
+          required="true"
           autocomplete="off"
           class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         >
@@ -165,6 +171,7 @@
         <input
           id="postal-code"
           type="text"
+          required="true"
           name="postal-code"
           autocomplete="off"
           class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -173,6 +180,7 @@
     </div>
     <div class="mt-10">
       <button
+        id="form-submit"
         type="submit"
         class="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
