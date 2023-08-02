@@ -6,13 +6,25 @@ import LoginForm from '../views/LoginForm.vue';
 import SignupForm from '../views/SignupForm.vue';
 import OnboardingForm from '../views/OnboardingForm.vue';
 import ControlPlane from '../views/ControlPlane.vue';
+import ControlPlaneView from '../views/control-plane/ControlPlaneView.vue';
+import ConnectionsView from '../views/control-plane/ConnectionsView.vue';
+import OrganizationView from '../views/control-plane/OrganizationView.vue';
 
 // Define your routes
 const routes = [
   { name: 'Login', path: '/', component: LoginForm },
   { name: 'Signup', path: '/signup', component: SignupForm },
   { name: 'Onboard', path: '/onboard/:onboarding_token/:email', component: OnboardingForm },
-  { name: 'ControlPlane', path: '/control-plane', component: ControlPlane },
+  {
+    name: 'ControlPlane',
+    path: '/control-plane',
+    component: ControlPlane,
+    children: [
+      { path: '', component: ControlPlaneView }, // Default child route
+      { path: 'connections', component: ConnectionsView },
+      { path: 'organization', component: OrganizationView },
+    ],
+  },
 ];
 
 // Create the router instance

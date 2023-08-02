@@ -46,7 +46,7 @@
               type="email"
               autocomplete="email"
               required="true"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              class="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -67,7 +67,7 @@
               type="password"
               autocomplete="current-password"
               required="true"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              class="block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -111,7 +111,8 @@ async function handleSignin(e) {
     const response = await httpClient.post('/login', submittedInfo);
     localStorage.setItem('token', response.data.token);
     console.log('POST request successful:', response.data);
-    router.push({ name: 'ControlPlane' });
+    submittedElements['form-submit'].disabled = false;
+    router.push('/control-plane');
   } catch (error) {
     submittedElements['form-submit'].disabled = false;
     console.error('Error performing POST request:', error);
