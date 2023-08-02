@@ -22,6 +22,7 @@
 import { ref } from 'vue';
 import httpClient from '../http-service';
 import { useRoute } from 'vue-router';
+import parseFormElements from '../helpers/formParser'
 
 const route = useRoute();
 const email = ref(route.params.email)
@@ -29,16 +30,12 @@ const email = ref(route.params.email)
 const onboardingToken = route.params.onboarding_token;
 
 const showCompanyForm = ref(false);
-const kebabCaseRegex = /-./g
 let submittedInfo = {}
 let submittedElements = {}
 function individualFormSubmission(e) {
   console.log("individualFormSubmission")
   console.log(e)
-  for(let ele of e.srcElement) {
-    submittedInfo[ele.id.replace(kebabCaseRegex, x=>x[1].toUpperCase())] = ele.value
-    submittedElements[ele.id] = ele
-  }
+  parseFormElements(e.srcElement, submittedInfo, submittedElements)
   submittedElements["form-submit"].disabled = true
   if(submittedInfo["province"]) {
     submittedInfo["state"] = submittedInfo["province"]
@@ -59,10 +56,7 @@ async function companyFormSubmission(e) {
   console.log("companyFormSubmission")
   console.log(e)
   submittedInfo["company"] = {}
-  for(let ele of e.srcElement) {
-    submittedInfo["company"][ele.id.replace(kebabCaseRegex, x=>x[1].toUpperCase())] = ele.value
-    submittedElements[ele.id] = ele
-  }
+  parseFormElements(e.srcElement, submittedInfo, submittedElements)
   submittedElements["form-submit"].disabled = true
   //Concat street address
   submittedInfo["company"]["streetAddress"] = submittedInfo["company"]["mailingAddress1"] + " " + submittedInfo["company"]["mailingAddress2"]
@@ -75,16 +69,15 @@ async function companyFormSubmission(e) {
   }
   submittedInfo["onboardingTicket"] = onboardingToken
   try {
-      // Perform the POST request using Axios and the HTTP service
-      const response = await httpClient.post('/onboard', submittedInfo);
-
-      // Handle the successful response
-      console.log('POST request successful:', response.data);
-    } catch (error) {
-      // Handle errors
-      submittedElements["form-submit"].disabled = false
-      console.error('Error performing POST request:', error);
-    }
+    // Perform the POST request using Axios and the HTTP service
+    const response = await httpClient.post('/onboard', submittedInfo);
+    // Handle the successful response
+    console.log('POST request successful:', response.data);
+  } catch (error) {
+    // Handle errors
+    submittedElements["form-submit"].disabled = false
+    console.error('Error performing POST request:', error);
+  }
 }
 </script>
 <script>

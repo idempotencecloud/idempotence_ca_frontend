@@ -38,6 +38,7 @@
         class="space-y-6"
         action="#"
         method="POST"
+        @submit.prevent="handleSignin"
       >
         <div>
           <label
@@ -46,8 +47,8 @@
           >Email address</label>
           <div class="mt-2">
             <input
-              id="email"
-              name="email"
+              id="email-address"
+              name="email-address"
               type="email"
               autocomplete="email"
               required="true"
@@ -80,6 +81,7 @@
 
         <div>
           <button
+            id="form-submit"
             type="submit"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
@@ -92,10 +94,37 @@
         New to Idempotence CA?
         {{ ' ' }}
         <a
-          href="/signup"
+          href="#"
           class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+          @click.prevent="signup"
         >Register a new company</a>
       </p>
     </div>
   </div>
 </template>
+
+<script setup>
+import parseFormElements from '../helpers/formParser'
+import httpClient from '../http-service';
+import router from '../router/index'
+
+async function handleSignin(e) {
+  let submittedInfo = {}
+  let submittedElements = {}
+  parseFormElements(e.srcElement, submittedInfo, submittedElements)
+  try {
+    submittedElements["form-submit"].disabled = true;
+    const response = await httpClient.post('/login', submittedInfo);
+    localStorage.setItem('token', response.data.token);
+    console.log('POST request successful:', response.data);
+    router.push({ name: 'ControlPlane' });
+  } catch (error) {
+    submittedElements["form-submit"].disabled = false;
+    console.error('Error performing POST request:', error);
+  }
+}
+
+function signup() {
+  router.push({ name: 'Signup' });
+}
+</script>

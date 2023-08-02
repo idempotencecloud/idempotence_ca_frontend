@@ -288,7 +288,7 @@ const usSelected = ref(true)
 const props = defineProps({
   'email': {
     type: String,
-    default: 'Test',
+    default: '',
   },
   'handleSubmit': {
     type: Function,
