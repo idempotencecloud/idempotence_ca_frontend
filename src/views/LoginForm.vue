@@ -27,24 +27,18 @@
         class="mx-auto h-10 w-auto"
         src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
         alt="Your Company"
-      >
+      />
       <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
         Sign in to your account
       </h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form
-        class="space-y-6"
-        action="#"
-        method="POST"
-        @submit.prevent="handleSignin"
-      >
+      <form class="space-y-6" action="#" method="POST" @submit.prevent="handleSignin">
         <div>
-          <label
-            for="email"
-            class="block text-sm font-medium leading-6 text-gray-900"
-          >Email address</label>
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900"
+            >Email address</label
+          >
           <div class="mt-2">
             <input
               id="email-address"
@@ -53,16 +47,15 @@
               autocomplete="email"
               required="true"
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            >
+            />
           </div>
         </div>
 
         <div>
           <div class="flex items-center justify-between">
-            <label
-              for="password"
-              class="block text-sm font-medium leading-6 text-gray-900"
-            >Password</label>
+            <label for="password" class="block text-sm font-medium leading-6 text-gray-900"
+              >Password</label
+            >
             <!--<div class="text-sm">
               <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
             </div>-->
@@ -75,7 +68,7 @@
               autocomplete="current-password"
               required="true"
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            >
+            />
           </div>
         </div>
 
@@ -97,29 +90,30 @@
           href="#"
           class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           @click.prevent="signup"
-        >Register a new company</a>
+          >Register a new company</a
+        >
       </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import parseFormElements from '../helpers/formParser'
+import parseFormElements from '../helpers/formParser';
 import httpClient from '../http-service';
-import router from '../router/index'
+import router from '@/router';
 
 async function handleSignin(e) {
-  let submittedInfo = {}
-  let submittedElements = {}
-  parseFormElements(e.srcElement, submittedInfo, submittedElements)
+  let submittedInfo = {};
+  let submittedElements = {};
+  parseFormElements(e.srcElement, submittedInfo, submittedElements);
   try {
-    submittedElements["form-submit"].disabled = true;
+    submittedElements['form-submit'].disabled = true;
     const response = await httpClient.post('/login', submittedInfo);
     localStorage.setItem('token', response.data.token);
     console.log('POST request successful:', response.data);
     router.push({ name: 'ControlPlane' });
   } catch (error) {
-    submittedElements["form-submit"].disabled = false;
+    submittedElements['form-submit'].disabled = false;
     console.error('Error performing POST request:', error);
   }
 }
