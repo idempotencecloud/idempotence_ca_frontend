@@ -215,7 +215,7 @@ const navigation = [
     href: '#',
     path: '/control-plane',
     icon: BookOpenIcon,
-    current: true,
+    current: false,
   },
   {
     name: 'Connections',
@@ -232,6 +232,10 @@ const navigation = [
     current: false,
   },
 ];
+
+navigation.forEach((item) => {
+    item.current = item.path === router.currentRoute.value.fullPath;
+});
 
 router.beforeEach((to, from, next) => {
   navigation.forEach((item) => {
