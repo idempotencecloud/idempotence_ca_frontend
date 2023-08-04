@@ -1,5 +1,5 @@
 <template>
-  <h1 class="leading-20">Waiting on Your Approval</h1>
+  <h1 class="leading-20">Connections Awaiting Your Approval</h1>
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div
       v-for="connection in data.caConnectionsPendingYourApproval"
