@@ -145,13 +145,9 @@
                 href="#"
                 class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
               >
-                <img
-                  class="h-8 w-8 rounded-full bg-gray-50"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
+                <UserIcon class="h-8 w-8 rounded-full bg-gray-50" />
                 <span class="sr-only">Your profile</span>
-                <span aria-hidden="true">Tom Cook</span>
+                <span v-if="agentProfile" aria-hidden="true">{{ agentProfile.firstName }} {{ agentProfile.lastName }}</span>
               </a>
             </li>
           </ul>
@@ -173,11 +169,7 @@
       <div class="flex-1 text-sm font-semibold leading-6 text-gray-900">Dashboard</div>
       <a href="#">
         <span class="sr-only">Your profile</span>
-        <img
-          class="h-8 w-8 rounded-full bg-gray-50"
-          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-          alt=""
-        />
+        <UserIcon class="h-8 w-8 rounded-full bg-gray-50" />
       </a>
     </div>
 
@@ -193,7 +185,7 @@
 import httpClient from '@/http-service';
 import { ref } from 'vue';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
-import { Bars3Icon, LinkIcon, BookOpenIcon, UsersIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { Bars3Icon, LinkIcon, BookOpenIcon, UsersIcon, XMarkIcon, UserIcon } from '@heroicons/vue/24/outline';
 
 import router from '@/router';
 import { useStore } from 'vuex';
@@ -202,8 +194,12 @@ const store = useStore();
 async function loadAgent() {
   const response = await httpClient.get('/agent');
   store.commit('setAgent', response.data);
+  return response.data
 }
-loadAgent()
+const agentProfile = ref({})
+loadAgent().then(a => {
+  agentProfile.value = a.agent
+})
 // import { createRouter, createWebHistory } from 'vue-router';
 
 // import { useRoute } from 'vue-router';
