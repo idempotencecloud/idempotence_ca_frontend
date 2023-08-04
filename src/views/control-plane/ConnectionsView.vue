@@ -1,5 +1,7 @@
 <template>
-  <h1 class="leading-20">Connections Awaiting Your Approval</h1>
+  <h1 v-if="data.caConnectionsPendingYourApproval.length > 0" class="leading-20">
+    Connections Awaiting Your Approval
+  </h1>
   <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
     <li
       v-for="connection in data.caConnectionsPendingYourApproval"
@@ -21,33 +23,21 @@
           <div class="flex w-0 flex-1">
             <a
               href="#"
-              class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-2 text-sm font-semibold text-gray-900"
-              @mouseover="isAcceptHovered = true"
-              @mouseout="isAcceptHovered = false"
+              @click.prevent="acceptConnection(connection)"
+              class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-2 text-sm font-semibold text-gray-400 hover:text-green-400"
             >
-              <CheckIcon
-                :class="`h-5 w-5 transition-colors ${
-                  isAcceptHovered ? 'text-green-400' : 'text-gray-400'
-                }`"
-                aria-hidden="true"
-              />
-              Accept
+              <CheckIcon class="h-5 w-5 transition-colors" aria-hidden="true" />
+              <span class="text-gray-900">Accept</span>
             </a>
           </div>
           <div class="-ml-px flex w-0 flex-1">
             <a
               href="#"
-              class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-2 text-sm font-semibold text-gray-900"
-              @mouseover="isDeclineHovered = true"
-              @mouseout="isDeclineHovered = false"
+              @click.prevent="declineConnection(connection)"
+              class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-2 text-sm font-semibold text-gray-400 hover:text-red-400"
             >
-              <XMarkIcon
-                :class="`h-5 w-5 transition-colors ${
-                  isDeclineHovered ? 'text-red-400' : 'text-gray-400'
-                }`"
-                aria-hidden="true"
-              />
-              Decline
+              <XMarkIcon class="h-5 w-5 transition-colors" aria-hidden="true" />
+              <span class="text-gray-900">Decline</span>
             </a>
           </div>
         </div>
@@ -120,8 +110,21 @@ const data = ref({
   caConnectionsPendingTheirApproval: [],
 });
 
-const isAcceptHovered = ref(false);
-const isDeclineHovered = ref(false);
+async function acceptConnection(connection) {
+  await httpClient.post('/connection/accept', {
+    connectionId: connection.ID,
+  });
+  loadActiveConnections(store.state.agent);
+  loadPendingConnections(store.state.agent);
+}
+
+async function declineConnection(connection) {
+  await httpClient.post('/connection/decline', {
+    connectionId: connection.ID,
+  });
+  loadActiveConnections(store.state.agent);
+  loadPendingConnections(store.state.agent);
+}
 
 async function loadActiveConnections(agent) {
   if (agent == null) return;
@@ -144,10 +147,6 @@ async function loadPendingConnections(agent) {
   if (agent == null) return;
   const response = await httpClient.get('/connections/pending');
   console.log(response.data);
-  if (response.data.activeConnections) {
-    processConnections(agent, response.data.activeConnections);
-    data.value.activeConnections = response.data.activeConnections;
-  }
   if (response.data.caConnectionsPendingYourApproval) {
     processConnections(agent, response.data.caConnectionsPendingYourApproval);
     data.value.caConnectionsPendingYourApproval = response.data.caConnectionsPendingYourApproval;
