@@ -191,17 +191,19 @@
 
 <script setup>
 import httpClient from '@/http-service';
-setTimeout(async function () {
-  const response = await httpClient.get('/agent');
-  console.log(response.data);
-}, 5000);
-
 import { ref } from 'vue';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { Bars3Icon, LinkIcon, BookOpenIcon, UsersIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
 import router from '@/router';
+import { useStore } from 'vuex';
 
+const store = useStore();
+async function loadAgent() {
+  const response = await httpClient.get('/agent');
+  store.commit('setAgent', response.data);
+}
+loadAgent()
 // import { createRouter, createWebHistory } from 'vue-router';
 
 // import { useRoute } from 'vue-router';
