@@ -6,6 +6,8 @@ function parseFormElements(target, submittedInfo, submittedElements) {
     submittedInfo[ele.id.replace(kebabCaseRegex, (x) => x[1].toUpperCase())] = ele.value;
     submittedElements[ele.id] = ele;
   }
+  //   console.log(submittedInfo);
+  //   console.log(submittedElements);
 }
 
 export default parseFormElements;
