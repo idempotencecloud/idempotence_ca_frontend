@@ -31,7 +31,7 @@ const routes = [
         component: CertificatesView,
         children: [
           { path: '', component: ActiveConnections },
-          { path: ':certificate_id', component: ConnectionCertificates },
+          { path: ':connection_id', component: ConnectionCertificates },
         ],
       },
     ],
