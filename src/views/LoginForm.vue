@@ -105,7 +105,7 @@ import router from '@/router';
 async function handleSignin(e) {
   let submittedInfo = {};
   let submittedElements = {};
-  parseFormElements(e.srcElement, submittedInfo, submittedElements);
+  parseFormElements(e.target, submittedInfo, submittedElements);
   try {
     submittedElements['form-submit'].disabled = true;
     const response = await httpClient.post('/login', submittedInfo);

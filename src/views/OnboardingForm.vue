@@ -55,7 +55,7 @@ let submittedElements = {};
 function individualFormSubmission(e) {
   console.log('individualFormSubmission');
   console.log(e);
-  parseFormElements(e.srcElement, submittedInfo, submittedElements);
+  parseFormElements(e.target, submittedInfo, submittedElements);
   submittedElements['form-submit'].disabled = true;
   if (submittedInfo['province']) {
     submittedInfo['state'] = submittedInfo['province'];
@@ -76,7 +76,7 @@ async function companyFormSubmission(e) {
   console.log('companyFormSubmission');
   console.log(e);
   submittedInfo['company'] = {};
-  parseFormElements(e.srcElement, submittedInfo['company'], submittedElements);
+  parseFormElements(e.target, submittedInfo['company'], submittedElements);
   submittedElements['form-submit'].disabled = true;
   //Concat street address
   submittedInfo['company']['streetAddress'] =
