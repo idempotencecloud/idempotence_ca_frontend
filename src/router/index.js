@@ -9,6 +9,7 @@ import ControlPlane from '../views/ControlPlane.vue';
 import ControlPlaneView from '../views/control-plane/ControlPlaneView.vue';
 import ConnectionsView from '../views/control-plane/ConnectionsView.vue';
 import OrganizationView from '../views/control-plane/OrganizationView.vue';
+import CertificatesView from '../views/control-plane/CertificatesView.vue';
 
 // Define your routes
 const routes = [
@@ -23,8 +24,10 @@ const routes = [
       { path: '', component: ControlPlaneView }, // Default child route
       { path: 'connections', component: ConnectionsView },
       { path: 'organization', component: OrganizationView },
+      { path: 'certificates', component: CertificatesView },
     ],
   },
+  { name: 'Login', path: '/', component: LoginForm },
 ];
 
 // Create the router instance

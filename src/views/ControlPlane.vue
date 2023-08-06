@@ -229,6 +229,13 @@ const navigation = [
     icon: UsersIcon,
     current: false,
   },
+  {
+    name: 'Certificates',
+    href: '#',
+    path: '/control-plane/certificates',
+    icon: UsersIcon,
+    current: false,
+  },
 ];
 
 navigation.forEach((item) => {
