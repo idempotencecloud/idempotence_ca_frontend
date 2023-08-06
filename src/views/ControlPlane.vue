@@ -185,7 +185,7 @@
 import httpClient from '@/http-service';
 import { ref } from 'vue';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
-import { Bars3Icon, LinkIcon, BookOpenIcon, UsersIcon, XMarkIcon, UserIcon } from '@heroicons/vue/24/outline';
+import { Bars3Icon, LinkIcon, BookOpenIcon, UsersIcon, XMarkIcon, UserIcon, DocumentMagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
 import router from '@/router';
 import { useStore } from 'vuex';
@@ -233,7 +233,7 @@ const navigation = [
     name: 'Certificates',
     href: '#',
     path: '/control-plane/certificates',
-    icon: UsersIcon,
+    icon: DocumentMagnifyingGlassIcon,
     current: false,
   },
 ];
