@@ -10,6 +10,8 @@ import ControlPlaneView from '../views/control-plane/ControlPlaneView.vue';
 import ConnectionsView from '../views/control-plane/ConnectionsView.vue';
 import OrganizationView from '../views/control-plane/OrganizationView.vue';
 import CertificatesView from '../views/control-plane/CertificatesView.vue';
+import ActiveConnections from '../views/control-plane/certificates/ActiveConnections.vue';
+import ConnectionCertificates from '../views/control-plane/certificates/ConnectionCertificates.vue';
 
 // Define your routes
 const routes = [
@@ -24,7 +26,14 @@ const routes = [
       { path: '', component: ControlPlaneView }, // Default child route
       { path: 'connections', component: ConnectionsView },
       { path: 'organization', component: OrganizationView },
-      { path: 'certificates', component: CertificatesView },
+      {
+        path: 'certificates',
+        component: CertificatesView,
+        children: [
+          { path: '', component: ActiveConnections },
+          { path: ':certificate_id', component: ConnectionCertificates },
+        ],
+      },
     ],
   },
   { name: 'Login', path: '/', component: LoginForm },

@@ -147,7 +147,9 @@
               >
                 <UserIcon class="h-8 w-8 rounded-full bg-gray-50" />
                 <span class="sr-only">Your profile</span>
-                <span v-if="agentProfile" aria-hidden="true">{{ agentProfile.firstName }} {{ agentProfile.lastName }}</span>
+                <span v-if="agentProfile" aria-hidden="true"
+                  >{{ agentProfile.firstName }} {{ agentProfile.lastName }}</span
+                >
               </a>
             </li>
           </ul>
@@ -185,7 +187,15 @@
 import httpClient from '@/http-service';
 import { ref } from 'vue';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
-import { Bars3Icon, LinkIcon, BookOpenIcon, UsersIcon, XMarkIcon, UserIcon, DocumentMagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import {
+  Bars3Icon,
+  LinkIcon,
+  BookOpenIcon,
+  UsersIcon,
+  XMarkIcon,
+  UserIcon,
+  DocumentMagnifyingGlassIcon,
+} from '@heroicons/vue/24/outline';
 
 import router from '@/router';
 import { useStore } from 'vuex';
@@ -194,12 +204,12 @@ const store = useStore();
 async function loadAgent() {
   const response = await httpClient.get('/agent');
   store.commit('setAgent', response.data);
-  return response.data
+  return response.data;
 }
-const agentProfile = ref({})
-loadAgent().then(a => {
-  agentProfile.value = a.agent
-})
+const agentProfile = ref({});
+loadAgent().then((a) => {
+  agentProfile.value = a.agent;
+});
 // import { createRouter, createWebHistory } from 'vue-router';
 
 // import { useRoute } from 'vue-router';
@@ -212,6 +222,7 @@ const navigation = [
     name: 'ControlPlane',
     href: '#',
     path: '/control-plane',
+    pathRegex: /\/control-plane$/g,
     icon: BookOpenIcon,
     current: false,
   },
@@ -219,6 +230,7 @@ const navigation = [
     name: 'Connections',
     href: '#',
     path: '/control-plane/connections',
+    pathRegex: /\/control-plane\/connections.*$/g,
     icon: LinkIcon,
     current: false,
   },
@@ -226,6 +238,7 @@ const navigation = [
     name: 'Organization',
     href: '#',
     path: '/control-plane/organization',
+    pathRegex: /\/control-plane\/organization.*$/g,
     icon: UsersIcon,
     current: false,
   },
@@ -233,18 +246,19 @@ const navigation = [
     name: 'Certificates',
     href: '#',
     path: '/control-plane/certificates',
+    pathRegex: /\/control-plane\/certificates.*$/g,
     icon: DocumentMagnifyingGlassIcon,
     current: false,
   },
 ];
 
 navigation.forEach((item) => {
-    item.current = item.path === router.currentRoute.value.fullPath;
+  item.current = item.pathRegex.test(router.currentRoute.value.fullPath);
 });
 
 router.beforeEach((to, from, next) => {
   navigation.forEach((item) => {
-    item.current = item.path === to.fullPath;
+    item.current = item.pathRegex.test(to.fullPath);
   });
   next();
 });
