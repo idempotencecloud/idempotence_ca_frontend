@@ -42,15 +42,51 @@
                   class="block text-sm font-semibold leading-6 text-gray-900"
                   >Certificate name</label
                 >
-                <div class="mt-2.5">
+                <div class="mt-1">
                   <input
                     id="certificate-name"
                     type="text"
                     name="certificate-name"
-                    autocomplete="given-name"
+                    autocomplete="off"
                     required="true"
                     class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
+                </div>
+              </div>
+              <div>
+                <label for="common-name" class="block text-sm font-semibold leading-6 text-gray-900"
+                  >Common name</label
+                >
+                <div class="mt-1">
+                  <input
+                    id="common-name"
+                    type="text"
+                    name="common-name"
+                    autocomplete="off"
+                    required="true"
+                    placeholder="example.com"
+                    class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                  <small class="text-gray-400">A common name for the certificate</small>
+                </div>
+              </div>
+              <div>
+                <label for="dns-names" class="block text-sm font-semibold leading-6 text-gray-900"
+                  >DNS names</label
+                >
+                <div class="mt-1">
+                  <input
+                    id="dns-names"
+                    type="text"
+                    name="dns-names"
+                    autocomplete="off"
+                    required="true"
+                    placeholder="example.com, www.example.com, *.example.com"
+                    class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                  <small class="text-gray-400"
+                    >A comma seperated list of DNS names for the certificate</small
+                  >
                 </div>
               </div>
               <div>
@@ -95,6 +131,7 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import httpClient from '@/http-service';
 import downloadFile from '@/helpers/fileDownload.js';
+import parseFormElements from '@/helpers/formParser.js';
 
 const route = useRoute();
 const connection_id = route.params.connection_id;
@@ -135,12 +172,15 @@ const openModal = function () {
   showModal.value = true;
 };
 async function signNewCertificate(e) {
-  const certificateName = Array.from(e.target.querySelectorAll('#certificate-name'))[0];
+  const submittedElements = {};
+  const submittedInfo = {};
+  parseFormElements(e.target, submittedInfo, submittedElements);
+  const dnsNames = submittedInfo.dnsNames.split(/,\s*/g);
   await httpClient.post(`/connection/certificate`, {
-    certificateName: certificateName.value,
+    certificateName: submittedInfo.certificateName,
     parentConnectionID: parseInt(connection_id, 10),
-    commonName: 'nextdoor.com',
-    dnsNames: ['nextdoor.com', '*.nextdoor.com'],
+    commonName: submittedInfo.commonName,
+    dnsNames: dnsNames,
   });
   loadConnectionCertificates();
   showModal.value = false;
