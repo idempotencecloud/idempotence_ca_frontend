@@ -217,12 +217,11 @@ loadAgent().then((a) => {
 // const route = useRoute();
 console.log(router.currentRoute.value);
 
-const navigation = [
+const navigation = ref([
   {
     name: 'ControlPlane',
     href: '#',
     path: '/control-plane',
-    pathRegex: /\/control-plane$/g,
     icon: BookOpenIcon,
     current: false,
   },
@@ -230,7 +229,6 @@ const navigation = [
     name: 'Connections',
     href: '#',
     path: '/control-plane/connections',
-    pathRegex: /\/control-plane\/connections.*$/g,
     icon: LinkIcon,
     current: false,
   },
@@ -238,7 +236,6 @@ const navigation = [
     name: 'Organization',
     href: '#',
     path: '/control-plane/organization',
-    pathRegex: /\/control-plane\/organization.*$/g,
     icon: UsersIcon,
     current: false,
   },
@@ -246,27 +243,34 @@ const navigation = [
     name: 'Certificates',
     href: '#',
     path: '/control-plane/certificates',
-    pathRegex: /\/control-plane\/certificates.*$/g,
     icon: DocumentMagnifyingGlassIcon,
     current: false,
   },
-];
+]);
 
-navigation.forEach((item) => {
-  item.current = item.pathRegex.test(router.currentRoute.value.fullPath);
+navigation.value.forEach((item) => {
+  if (item.path == '/control-plane') {
+    item.current = router.currentRoute.value.fullPath == item.path;
+  } else {
+    item.current = router.currentRoute.value.fullPath.includes(item.path);
+  }
 });
 
 router.beforeEach((to, from, next) => {
-  navigation.forEach((item) => {
-    item.current = item.pathRegex.test(to.fullPath);
+  navigation.value.forEach((item) => {
+    if (item.path == '/control-plane') {
+      item.current = to.fullPath == item.path;
+    } else {
+      item.current = to.fullPath.includes(item.path);
+    }
   });
   next();
 });
 
 const handleNavigationClick = (clickedItem) => {
-  navigation.forEach((item) => {
-    item.current = item === clickedItem;
-    if (item.current) {
+  navigation.value.forEach((item) => {
+    const current = item.path === clickedItem.path;
+    if (current) {
       router.push(item.path);
     }
   });
