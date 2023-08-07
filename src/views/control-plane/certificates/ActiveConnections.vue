@@ -33,19 +33,21 @@
         <div class="-mt-px flex divide-x divide-gray-200">
           <div class="flex w-0 flex-1">
             <a
+              @click="loadCertificates(connection.ID)"
               href="#"
-              class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+              class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold transition-colors text-gray-500 hover:text-green-500"
             >
-              <DocumentMagnifyingGlassIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <DocumentMagnifyingGlassIcon class="h-5 w-5" aria-hidden="true" />
               Certificates
             </a>
           </div>
           <div class="-ml-px flex w-0 flex-1">
             <a
+              @click="diconnectConnection(connection)"
               href="#"
-              class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+              class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold transition-colors text-gray-500 hover:text-red-500"
             >
-              <XMarkIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <XMarkIcon class="h-5 w-5" aria-hidden="true" />
               Disconnect
             </a>
           </div>
@@ -63,6 +65,8 @@ import {
 } from '@heroicons/vue/20/solid';
 
 import httpClient from '@/http-service';
+import router from '@/router';
+
 import { ref } from 'vue';
 import { watch } from 'vue';
 import { useStore } from 'vuex';
@@ -82,6 +86,20 @@ const copyToClipboard = (text) => {
     .catch((err) => {
       console.error('Unable to copy text to clipboard:', err);
     });
+};
+
+const loadCertificates = (id) => {
+  router.push(`/control-plane/certificates/${id}`);
+};
+
+const diconnectConnection = async (connection) => {
+  const message = `Are you sure you want to disconnect from ${connection.to_agent.emailAddress}?`;
+  if (confirm(message)) {
+    await httpClient.post('/connection/disconnect', {
+      connectionId: connection.ID,
+    });
+    loadActiveConnections(store.state.agent);
+  }
 };
 
 async function loadActiveConnections(agent) {
