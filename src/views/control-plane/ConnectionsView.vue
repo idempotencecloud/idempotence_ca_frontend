@@ -45,10 +45,18 @@
     </li>
   </ul>
 
-  <h1 v-if="data.caConnectionsPendingTheirApproval.length > 0" class="leading-20">
-    Connections Awaiting Approval
-  </h1>
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <h1 class="leading-20">Connections Awaiting Approval</h1>
+  <div>
+    <button
+      @click.prevent="showModal = true"
+      type="button"
+      class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      <PaperAirplaneIcon class="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
+      Send Connection Requests
+    </button>
+  </div>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-6">
     <div
       v-for="connection in data.caConnectionsPendingTheirApproval"
       :key="connection.to_agent.email"
@@ -70,19 +78,100 @@
       </div>
     </div>
   </div>
+
+  <transition name="modal-fade">
+    <div
+      v-if="showModal"
+      class="fixed bg-black bg-opacity-50 inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto"
+    >
+      <div class="relative bg-white w-1/2 md:w-1/3 mx-auto p-8 rounded-lg shadow-lg">
+        <slot
+          ><form
+            action="#"
+            method="POST"
+            class="mx-auto max-w-xl"
+            @submit.prevent="sendConnectionRequest"
+          >
+            <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-1">
+              <div>
+                <label
+                  for="email-address"
+                  class="block text-sm font-semibold leading-6 text-gray-900"
+                  >Email Address</label
+                >
+                <div class="mt-1">
+                  <input
+                    id="email-address"
+                    type="email"
+                    name="email-address"
+                    autocomplete="off"
+                    required="true"
+                    class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+              <div>
+                <label for="memo" class="block text-sm font-semibold leading-6 text-gray-900"
+                  >Memo</label
+                >
+                <div class="mt-1">
+                  <textarea
+                    id="memo"
+                    type="text"
+                    name="memo"
+                    autocomplete="off"
+                    placeholder="Optional memoranmdum for the connection invitee."
+                    class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+              <div class="text-right">
+                <button
+                  id="form-submit"
+                  type="submit"
+                  class="inline-flex rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  <PaperAirplaneIcon class="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" /> Send
+                  Connection Request
+                </button>
+              </div>
+            </div>
+          </form></slot
+        >
+        <!-- Close button -->
+        <button
+          class="absolute top-0 right-0 mt-4 mr-4 text-gray-500 hover:text-gray-600"
+          @click="showModal = false"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script setup>
-import {
-  CheckIcon,
-  XMarkIcon,
-} from '@heroicons/vue/20/solid';
+import { CheckIcon, XMarkIcon, PaperAirplaneIcon } from '@heroicons/vue/20/solid';
 
 import httpClient from '@/http-service';
 import { ref } from 'vue';
 import { watch } from 'vue';
 import { useStore } from 'vuex';
 import processConnections from '../../helpers/connectionResolver';
+import parseFormElements from '@/helpers/formParser.js';
 const store = useStore();
 
 const data = ref({
@@ -90,10 +179,22 @@ const data = ref({
   caConnectionsPendingTheirApproval: [],
 });
 
+const showModal = ref(false);
+
 async function acceptConnection(connection) {
   await httpClient.post('/connection/accept', {
     connectionId: connection.ID,
   });
+  loadPendingConnections(store.state.agent);
+}
+
+async function sendConnectionRequest(e) {
+  const submittedElements = {};
+  const submittedInfo = {};
+  parseFormElements(e.target, submittedInfo, submittedElements);
+  console.log(submittedInfo);
+  await httpClient.post('/connection', submittedInfo);
+  showModal.value = false;
   loadPendingConnections(store.state.agent);
 }
 
