@@ -25,6 +25,7 @@ const routes = [
     children: [
       { path: '', component: ControlPlaneView }, // Default child route
       { path: 'connections', component: ConnectionsView },
+      { path: 'connections/:action', component: ConnectionsView },
       { path: 'organization', component: OrganizationView },
       {
         path: 'certificates',

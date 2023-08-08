@@ -174,12 +174,17 @@ import processConnections from '../../helpers/connectionResolver';
 import parseFormElements from '@/helpers/formParser.js';
 const store = useStore();
 
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
+const action = route.params.action;
+
 const data = ref({
   caConnectionsPendingYourApproval: [],
   caConnectionsPendingTheirApproval: [],
 });
 
-const showModal = ref(false);
+const showModal = ref(action == 'send-connection');
 
 async function acceptConnection(connection) {
   await httpClient.post('/connection/accept', {
