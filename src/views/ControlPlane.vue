@@ -116,6 +116,7 @@
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
                   <a
+                    v-if="item.display"
                     :href="item.href"
                     :class="[
                       item.current
@@ -208,9 +209,6 @@ async function loadAgent() {
   return response.data;
 }
 const agentProfile = ref({});
-loadAgent().then((a) => {
-  agentProfile.value = a.agent;
-});
 // import { createRouter, createWebHistory } from 'vue-router';
 
 // import { useRoute } from 'vue-router';
@@ -225,6 +223,7 @@ const navigation = ref([
     path: '/control-plane',
     icon: BookOpenIcon,
     current: false,
+    display: true,
   },
   {
     name: 'Connections',
@@ -232,6 +231,7 @@ const navigation = ref([
     path: '/control-plane/connections',
     icon: LinkIcon,
     current: false,
+    display: true,
   },
   {
     name: 'Organization',
@@ -239,6 +239,7 @@ const navigation = ref([
     path: '/control-plane/organization',
     icon: UsersIcon,
     current: false,
+    display: false,
   },
   {
     name: 'Certificates',
@@ -246,6 +247,7 @@ const navigation = ref([
     path: '/control-plane/certificates',
     icon: DocumentMagnifyingGlassIcon,
     current: false,
+    display: true,
   },
   {
     name: 'API Credentials',
@@ -253,8 +255,14 @@ const navigation = ref([
     path: '/control-plane/api-credentials',
     icon: KeyIcon,
     current: false,
+    display: true,
   },
 ]);
+
+loadAgent().then((a) => {
+  agentProfile.value = a.agent;
+  navigation.value[2].display = agentProfile.value.isAdministrator;
+});
 
 navigation.value.forEach((item) => {
   if (item.path == '/control-plane') {
