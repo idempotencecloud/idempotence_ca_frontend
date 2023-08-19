@@ -18,7 +18,7 @@ import APICredentials from '../views/control-plane/APICredentials.vue';
 const routes = [
   { name: 'Login', path: '/', component: LoginForm },
   { name: 'Signup', path: '/signup', component: SignupForm },
-  { name: 'Onboard', path: '/onboard/:onboarding_token/:email', component: OnboardingForm },
+  { name: 'Onboard', path: '/onboard/:onboarding_token/:email/:mode', component: OnboardingForm },
   {
     name: 'ControlPlane',
     path: '/control-plane',

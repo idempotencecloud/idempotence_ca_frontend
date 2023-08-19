@@ -47,6 +47,8 @@ const route = useRoute();
 
 const email = ref(route.params.email);
 
+const mode = route.params.mode;
+
 const onboardingToken = route.params.onboarding_token;
 
 const showCompanyForm = ref(false);
@@ -70,12 +72,19 @@ function individualFormSubmission(e) {
     return;
   }
   submittedElements['form-submit'].disabled = false;
-  showCompanyForm.value = true;
+  if (mode == 'agent') {
+    companyFormSubmission(e);
+  } else {
+    showCompanyForm.value = true;
+  }
 }
 async function companyFormSubmission(e) {
   console.log('companyFormSubmission');
   console.log(e);
   submittedInfo['company'] = {};
+  if (mode == 'agent') {
+    submittedInfo['company']['companyName'] = 'Ignore';
+  }
   parseFormElements(e.target, submittedInfo['company'], submittedElements);
   submittedElements['form-submit'].disabled = true;
   //Concat street address
