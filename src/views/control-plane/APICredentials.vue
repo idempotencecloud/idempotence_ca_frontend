@@ -19,7 +19,11 @@
         <td class="px-4 py-2 border border-gray-400">{{ credential.apiName }}</td>
         <td class="px-4 py-2 border border-gray-400">{{ credential.apiKey }}</td>
         <td class="px-4 py-2 border border-gray-400 text-right">{{ credential.expiration }}</td>
-        <td class="px-4 py-2 border border-gray-400 text-right"></td>
+        <td class="px-4 py-2 border border-gray-400 text-center">
+          <a href="#" @click.prevent="revokeCredential(credential.apiKey, credential.credentialId)"
+            >Revoke</a
+          >
+        </td>
       </tr>
     </tbody>
   </table>
@@ -186,6 +190,14 @@ async function createNewAPICredentials(e) {
   data.value.apiSecret = credential.data.apiSecret;
   loadAPICredentials();
   // showModal.value = false;
+}
+async function revokeCredential(key, id) {
+  if (confirm(`Are you sure you want to revoke API Key: ${key}?`)) {
+    await httpClient.post(`/api-credential/revoke`, {
+      apiCredentialId: id,
+    });
+    loadAPICredentials();
+  }
 }
 </script>
 
