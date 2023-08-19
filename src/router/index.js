@@ -12,6 +12,7 @@ import OrganizationView from '../views/control-plane/OrganizationView.vue';
 import CertificatesView from '../views/control-plane/CertificatesView.vue';
 import ActiveConnections from '../views/control-plane/certificates/ActiveConnections.vue';
 import ConnectionCertificates from '../views/control-plane/certificates/ConnectionCertificates.vue';
+import APICredentials from '../views/control-plane/APICredentials.vue';
 
 // Define your routes
 const routes = [
@@ -35,6 +36,7 @@ const routes = [
           { path: ':connection_id', component: ConnectionCertificates },
         ],
       },
+      { path: 'api-credentials', component: APICredentials },
     ],
   },
   { name: 'Login', path: '/', component: LoginForm },

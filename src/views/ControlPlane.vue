@@ -195,6 +195,7 @@ import {
   XMarkIcon,
   UserIcon,
   DocumentMagnifyingGlassIcon,
+  KeyIcon,
 } from '@heroicons/vue/24/outline';
 
 import router from '@/router';
@@ -244,6 +245,13 @@ const navigation = ref([
     href: '#',
     path: '/control-plane/certificates',
     icon: DocumentMagnifyingGlassIcon,
+    current: false,
+  },
+  {
+    name: 'API Credentials',
+    href: '#',
+    path: '/control-plane/api-credentials',
+    icon: KeyIcon,
     current: false,
   },
 ]);
