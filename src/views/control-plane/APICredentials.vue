@@ -87,9 +87,23 @@
         <slot v-if="data.apiKey">
           <dl class="mt-1 flex flex-grow flex-col justify-between">
             <dt>API Key</dt>
-            <dd class="text-sm text-gray-500">{{ data.apiKey }}</dd>
+            <dd class="text-sm text-gray-500">
+              {{ data.apiKey }}
+              <span
+                class="cursor-pointer inline-flex m-1 px-2 items-center rounded-full bg-green-50 py-1 text-xs font-medium text-green-700 hover:text-green-500 active:text-green-700 ring-1 ring-inset ring-green-600/20"
+                @click.prevent="copyToClipboard(data.apiKey)"
+                ><DocumentDuplicateIcon class="h-4 w-4"
+              /></span>
+            </dd>
             <dt>API Secret</dt>
-            <dd class="text-sm text-gray-500 break-all">{{ data.apiSecret }}</dd>
+            <dd class="text-sm text-gray-500 break-all">
+              {{ data.apiSecret }}
+              <span
+                class="cursor-pointer inline-flex m-1 px-2 items-center rounded-full bg-green-50 py-1 text-xs font-medium text-green-700 hover:text-green-500 active:text-green-700 ring-1 ring-inset ring-green-600/20"
+                @click.prevent="copyToClipboard(data.apiSecret)"
+                ><DocumentDuplicateIcon class="h-4 w-4"
+              /></span>
+            </dd>
           </dl>
           <small class="text-red-950"
             >API Secret is only revealed once, please me sure to securely save it.</small
@@ -124,12 +138,24 @@
 import { ref } from 'vue';
 import httpClient from '@/http-service';
 import parseFormElements from '@/helpers/formParser.js';
+import { DocumentDuplicateIcon } from '@heroicons/vue/20/solid';
 
 const data = ref({
   credentials: [],
   apiKey: '',
   apiSecret: '',
 });
+
+const copyToClipboard = (text) => {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      console.log('Text copied to clipboard');
+    })
+    .catch((err) => {
+      console.error('Unable to copy text to clipboard:', err);
+    });
+};
 
 async function loadAPICredentials() {
   const response = await httpClient.get(`/api-credentials`);
