@@ -5,6 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginForm from '../views/LoginForm.vue';
 import SignupForm from '../views/SignupForm.vue';
 import OnboardingForm from '../views/OnboardingForm.vue';
+import DeclineInvitationForm from '../views/DeclineInvitationForm.vue';
 import ControlPlane from '../views/ControlPlane.vue';
 import ControlPlaneView from '../views/control-plane/ControlPlaneView.vue';
 import ConnectionsView from '../views/control-plane/ConnectionsView.vue';
@@ -19,6 +20,11 @@ const routes = [
   { name: 'Login', path: '/', component: LoginForm },
   { name: 'Signup', path: '/signup', component: SignupForm },
   { name: 'Onboard', path: '/onboard/:onboarding_token/:email/:mode', component: OnboardingForm },
+  {
+    name: 'DeclineInvitation',
+    path: '/decline-invite/:onboarding_token/:email',
+    component: DeclineInvitationForm,
+  },
   {
     name: 'ControlPlane',
     path: '/control-plane',
