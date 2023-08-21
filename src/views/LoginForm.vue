@@ -112,7 +112,8 @@ async function handleSignin(e) {
     localStorage.setItem('token', response.data.token);
     console.log('POST request successful:', response.data);
     submittedElements['form-submit'].disabled = false;
-    router.push('/control-plane');
+    router.push(httpClient.pendingRedirect);
+    httpClient.pendingRedirect = '/control-plane';
   } catch (error) {
     submittedElements['form-submit'].disabled = false;
     console.error('Error performing POST request:', error);

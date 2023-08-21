@@ -13,12 +13,18 @@ httpClient.interceptors.request.use((config) => {
   return config;
 });
 
+httpClient.pendingRedirect = '/control-plane';
+
 httpClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   (error) => {
     if (error.response.status === 401) {
       // Unauthorized error, token may have expired
       // You can also check for specific error messages from the API if needed
+      if (router.currentRoute.value.fullPath != '/')
+        httpClient.pendingRedirect = router.currentRoute.value.fullPath;
       localStorage.setItem('token', '');
       router.push({ name: 'Login' });
       return Promise.resolve({});
