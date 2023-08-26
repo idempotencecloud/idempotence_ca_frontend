@@ -62,6 +62,34 @@
       class="fixed bg-black bg-opacity-50 inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto"
     >
       <div class="relative bg-white w-2/3 md:w-2/3 mx-auto p-8 rounded-lg shadow-lg">
+        <div v-if="requestErrorDialog" class="rounded-md bg-red-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                We failed to create your API credentials, please check your request and try again.
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div v-if="networkErrorDialog" class="rounded-md bg-yellow-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>
+                  We could not connect to the network. Please check your network connection and try
+                  again.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <slot v-if="!data.apiKey"
           ><form
             action="#"
@@ -182,6 +210,9 @@ const data = ref({
 const networkError = ref(false);
 const requestError = ref(false);
 
+const networkErrorDialog = ref(false);
+const requestErrorDialog = ref(false);
+
 const copyToClipboard = (text) => {
   navigator.clipboard
     .writeText(text)
@@ -221,21 +252,39 @@ const closeModal = function () {
   showModal.value = false;
 };
 const openModal = function () {
+  requestErrorDialog.value = false;
+  networkErrorDialog.value = false;
   data.value.apiKey = '';
   data.value.apiSecret = '';
   showModal.value = true;
 };
 async function createNewAPICredentials(e) {
+  requestErrorDialog.value = false;
+  networkErrorDialog.value = false;
   const submittedElements = {};
   const submittedInfo = {};
   parseFormElements(e.target, submittedInfo, submittedElements);
+  submittedElements['form-submit'].disabled = true;
   console.log(submittedElements);
   console.log(submittedInfo);
-  const credential = await httpClient.post(`/api-credential`, submittedInfo);
-  console.log(credential);
-  data.value.apiKey = credential.data.apiKey;
-  data.value.apiSecret = credential.data.apiSecret;
-  loadAPICredentials();
+  try {
+    const credential = await httpClient.post(`/api-credential`, submittedInfo);
+    console.log(credential);
+    data.value.apiKey = credential.data.apiKey;
+    data.value.apiSecret = credential.data.apiSecret;
+    submittedElements['form-submit'].disabled = false;
+    loadAPICredentials();
+  } catch (error) {
+    submittedElements['form-submit'].disabled = false;
+    if (error.code == 'ERR_NETWORK') {
+      networkErrorDialog.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestErrorDialog.value = true;
+      return;
+    }
+  }
   // showModal.value = false;
 }
 async function revokeCredential(key, id) {
