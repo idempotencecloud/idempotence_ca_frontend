@@ -183,6 +183,34 @@
 
     <main class="py-10 lg:pl-72">
       <div class="px-4 sm:px-6 lg:px-8">
+        <div v-if="requestError" class="rounded-md bg-red-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                We failed to load your profile, please try again later.
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div v-if="networkError" class="rounded-md bg-yellow-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>
+                  We could not connect to the network. Please check your network connection and try
+                  again.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <router-view></router-view>
       </div>
     </main>
@@ -205,14 +233,31 @@ import {
   ArrowLeftOnRectangleIcon,
 } from '@heroicons/vue/24/outline';
 
+import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+
 import router from '@/router';
 import { useStore } from 'vuex';
 
+const requestError = ref(false);
+const networkError = ref(false);
+
 const store = useStore();
 async function loadAgent() {
-  const response = await httpClient.get('/agent');
-  store.commit('setAgent', response.data);
-  return response.data;
+  try {
+    const response = await httpClient.get('/agent');
+    store.commit('setAgent', response.data);
+    return response.data;
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestError.value = true;
+      return;
+    }
+    throw error;
+  }
 }
 const agentProfile = ref({});
 // import { createRouter, createWebHistory } from 'vue-router';
