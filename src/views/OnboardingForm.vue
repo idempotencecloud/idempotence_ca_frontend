@@ -72,6 +72,7 @@ import httpClient from '../http-service';
 import parseFormElements from '../helpers/formParser';
 import router from '@/router';
 import { useRoute } from 'vue-router';
+import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 const route = useRoute();
 
 const email = ref(route.params.email);

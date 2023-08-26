@@ -66,6 +66,7 @@ import httpClient from '../http-service';
 // import parseFormElements from '../helpers/formParser';
 // import router from '@/router';
 import { useRoute } from 'vue-router';
+import { XCircleIcon } from '@heroicons/vue/24/outline';
 const route = useRoute();
 
 const email = route.params.email;
