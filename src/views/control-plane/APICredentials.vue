@@ -1,4 +1,32 @@
 <template>
+  <div v-if="requestError" class="rounded-md bg-red-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">
+          We failed to load your API credentials, please try again later.
+        </h3>
+      </div>
+    </div>
+  </div>
+  <div v-if="networkError" class="rounded-md bg-yellow-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+        <div class="mt-2 text-sm text-yellow-700">
+          <p>
+            We could not connect to the network. Please check your network connection and try again.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <button @click="openModal" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
     Generate New API Credentials
   </button>
@@ -143,12 +171,16 @@ import { ref } from 'vue';
 import httpClient from '@/http-service';
 import parseFormElements from '@/helpers/formParser.js';
 import { DocumentDuplicateIcon } from '@heroicons/vue/20/solid';
+import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 
 const data = ref({
   credentials: [],
   apiKey: '',
   apiSecret: '',
 });
+
+const networkError = ref(false);
+const requestError = ref(false);
 
 const copyToClipboard = (text) => {
   navigator.clipboard
@@ -162,8 +194,23 @@ const copyToClipboard = (text) => {
 };
 
 async function loadAPICredentials() {
-  const response = await httpClient.get(`/api-credentials`);
-  data.value.credentials = response.data.apiCredentials;
+  networkError.value = false;
+  requestError.value = false;
+  try {
+    const response = await httpClient.get(`/api-credentials`);
+    data.value.credentials = response.data.apiCredentials;
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      console.log('Network error');
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      console.error('Authentication error');
+      requestError.value = true;
+      return;
+    }
+  }
 }
 
 loadAPICredentials();
