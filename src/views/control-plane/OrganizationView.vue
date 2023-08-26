@@ -1,5 +1,5 @@
 <template>
-  <h1 class="leading-20">Organization View</h1>
+  <h1 class="leading-20">Organization</h1>
   <div>
     <button
       @click.prevent="showModal = true"
