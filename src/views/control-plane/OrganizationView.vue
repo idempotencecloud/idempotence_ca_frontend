@@ -1,8 +1,35 @@
 <template>
+  <div v-if="requestError" class="rounded-md bg-red-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">
+          We failed to process your request, please try again later.
+        </h3>
+      </div>
+    </div>
+  </div>
+  <div v-if="networkError" class="rounded-md bg-yellow-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+        <div class="mt-2 text-sm text-yellow-700">
+          <p>
+            We could not connect to the network. Please check your network connection and try again.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
   <h1 class="leading-20">Organization</h1>
   <div>
     <button
-      @click.prevent="showModal = true"
+      @click.prevent="openModal()"
       type="button"
       class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
     >
@@ -45,6 +72,34 @@
       class="fixed bg-black bg-opacity-50 inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto"
     >
       <div class="relative bg-white w-1/2 md:w-1/3 mx-auto p-8 rounded-lg shadow-lg">
+        <div v-if="requestErrorDialog" class="rounded-md bg-red-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                We failed to process your request, please check your request and try again.
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div v-if="networkErrorDialog" class="rounded-md bg-yellow-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>
+                  We could not connect to the network. Please check your network connection and try
+                  again.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <slot
           ><form
             action="#"
@@ -114,35 +169,91 @@ import httpClient from '@/http-service';
 import { ref } from 'vue';
 import parseFormElements from '@/helpers/formParser.js';
 
+import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+
 const showModal = ref(false);
 
 const data = ref({
   agents: [],
 });
 
+const requestError = ref(false);
+const networkError = ref(false);
+
+const requestErrorDialog = ref(false);
+const networkErrorDialog = ref(false);
+
+const openModal = function () {
+  requestErrorDialog.value = false;
+  networkErrorDialog.value = false;
+  showModal.value = true;
+};
+
 async function makeAdministrator(emailAddress, id) {
+  networkError.value = false;
+  requestError.value = false;
   ///company/administrator
   if (confirm(`Are you sure you want to assign administrative rights to ${emailAddress}?`)) {
-    await httpClient.post('/company/administrator', {
-      agentId: id,
-    });
-    loadAgents();
+    try {
+      await httpClient.post('/company/administrator', {
+        agentId: id,
+      });
+      loadAgents();
+    } catch (error) {
+      if (error.code == 'ERR_NETWORK') {
+        networkError.value = true;
+        return;
+      }
+      if (error.code == 'ERR_BAD_REQUEST') {
+        requestError.value = true;
+        return;
+      }
+    }
   }
 }
 
 async function addCompanyAgent(e) {
   let submittedInfo = {};
   let submittedElements = {};
+  networkErrorDialog.value = false;
+  requestErrorDialog.value = false;
   parseFormElements(e.target, submittedInfo, submittedElements);
-  const response = await httpClient.post('/agent/add', submittedInfo);
-  console.log(response.data);
-  showModal.value = false;
-  loadAgents();
+  submittedElements['form-submit'].disabled = true;
+  try {
+    const response = await httpClient.post('/agent/add', submittedInfo);
+    console.log(response.data);
+    submittedElements['form-submit'].disabled = false;
+    showModal.value = false;
+    loadAgents();
+  } catch (error) {
+    submittedElements['form-submit'].disabled = false;
+    if (error.code == 'ERR_NETWORK') {
+      networkErrorDialog.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestErrorDialog.value = true;
+      return;
+    }
+  }
 }
 
 async function loadAgents() {
-  const response = await httpClient.get('/company/agents');
-  data.value.agents = response.data.agents;
+  requestError.value = false;
+  networkError.value = false;
+  try {
+    const response = await httpClient.get('/company/agents');
+    data.value.agents = response.data.agents;
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestError.value = true;
+      return;
+    }
+  }
 }
 
 loadAgents();

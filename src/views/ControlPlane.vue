@@ -195,22 +195,6 @@
             </div>
           </div>
         </div>
-        <div v-if="networkError" class="rounded-md bg-yellow-50 p-4 mb-4">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
-              <div class="mt-2 text-sm text-yellow-700">
-                <p>
-                  We could not connect to the network. Please check your network connection and try
-                  again.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
         <router-view></router-view>
       </div>
     </main>
@@ -233,23 +217,23 @@ import {
   ArrowLeftOnRectangleIcon,
 } from '@heroicons/vue/24/outline';
 
-import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+import { XCircleIcon } from '@heroicons/vue/24/outline';
 
 import router from '@/router';
 import { useStore } from 'vuex';
 
 const requestError = ref(false);
-const networkError = ref(false);
 
 const store = useStore();
 async function loadAgent() {
+  requestError.value = false;
   try {
     const response = await httpClient.get('/agent');
     store.commit('setAgent', response.data);
     return response.data;
   } catch (error) {
     if (error.code == 'ERR_NETWORK') {
-      networkError.value = true;
+      requestError.value = true;
       return;
     }
     if (error.code == 'ERR_BAD_REQUEST') {
