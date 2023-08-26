@@ -265,10 +265,14 @@ const navigation = ref([
   },
 ]);
 
-loadAgent().then((a) => {
-  agentProfile.value = a.agent;
-  navigation.value[2].display = agentProfile.value.isAdministrator;
-});
+loadAgent()
+  .then((a) => {
+    agentProfile.value = a.agent;
+    navigation.value[2].display = agentProfile.value.isAdministrator;
+  })
+  .catch((e) => {
+    console.log(e);
+  });
 
 navigation.value.forEach((item) => {
   if (item.path == '/control-plane') {

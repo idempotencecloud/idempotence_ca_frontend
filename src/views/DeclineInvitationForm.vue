@@ -1,5 +1,17 @@
 <template>
   <div class="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+    <div v-if="requestError" class="rounded-md bg-red-50 p-4 mb-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            An error occured while processing your request, please try again.
+          </h3>
+        </div>
+      </div>
+    </div>
     <div
       class="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
       aria-hidden="true"
@@ -59,12 +71,18 @@ const route = useRoute();
 const email = route.params.email;
 const onboardingToken = route.params.onboarding_token;
 const message = ref('');
+const requestError = ref(false);
 
 async function declineInvite() {
-  const response = await httpClient.post('/agent/decline', {
-    emailAddress: email,
-    onboardingTicket: onboardingToken,
-  });
-  message.value = response.data.message;
+  try {
+    requestError.value = false;
+    const response = await httpClient.post('/agent/decline', {
+      emailAddress: email,
+      onboardingTicket: onboardingToken,
+    });
+    message.value = response.data.message;
+  } catch (e) {
+    requestError.value = true;
+  }
 }
 </script>
