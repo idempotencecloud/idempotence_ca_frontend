@@ -82,6 +82,18 @@
                             {{ item.name }}
                           </a>
                         </li>
+                        <li>
+                          <a
+                            :class="[
+                              'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
+                              'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
+                            ]"
+                            @click.prevent="logoutAgent"
+                          >
+                            <ArrowLeftOnRectangleIcon class="h-6 w-6 shrink-0 text-gray-400" />
+                            Logout</a
+                          >
+                        </li>
                       </ul>
                     </li>
                   </ul>
@@ -139,10 +151,11 @@
                 class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
               >
                 <UserIcon class="h-8 w-8 rounded-full bg-gray-50" />
-                <span class="sr-only">Your profile</span>
-                <span v-if="agentProfile" aria-hidden="true"
-                  >{{ agentProfile.firstName }} {{ agentProfile.lastName }}</span
-                >
+                <span class="sr-only">Your profile and logout</span>
+                <span @click.prevent="logoutAgent" v-if="agentProfile" aria-hidden="true"
+                  >{{ agentProfile.firstName }} {{ agentProfile.lastName }}
+                  <ArrowLeftOnRectangleIcon class="h-6 w-6 inline-block"
+                /></span>
               </a>
             </li>
           </ul>
@@ -189,6 +202,7 @@ import {
   UserIcon,
   DocumentMagnifyingGlassIcon,
   KeyIcon,
+  ArrowLeftOnRectangleIcon,
 } from '@heroicons/vue/24/outline';
 
 import router from '@/router';
@@ -282,6 +296,11 @@ const handleNavigationClick = (clickedItem) => {
       router.push(item.path);
     }
   });
+};
+
+const logoutAgent = () => {
+  localStorage.setItem('token', '');
+  window.location = '/';
 };
 
 const sidebarOpen = ref(false);
