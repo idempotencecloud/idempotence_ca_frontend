@@ -1,5 +1,34 @@
 <template>
   <div class="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+    <div v-if="onboardingError" class="rounded-md bg-red-50 p-4 mb-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            Your onboarding request failed to complete. Please check the onboarding link and try
+            again.
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div v-if="networkError" class="rounded-md bg-yellow-50 p-4 mb-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+          <div class="mt-2 text-sm text-yellow-700">
+            <p>
+              We could not connect to the network. Please check your network connection and try
+              again.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div
       class="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
       aria-hidden="true"
@@ -51,6 +80,9 @@ const mode = route.params.mode;
 
 const onboardingToken = route.params.onboarding_token;
 
+const networkError = ref(false);
+const onboardingError = ref(false);
+
 const showCompanyForm = ref(false);
 let submittedInfo = {};
 let submittedElements = {};
@@ -79,6 +111,8 @@ function individualFormSubmission(e) {
   }
 }
 async function companyFormSubmission(e) {
+  networkError.value = false;
+  onboardingError.value = false;
   console.log('companyFormSubmission');
   console.log(e);
   submittedInfo['company'] = {};
@@ -114,12 +148,22 @@ async function companyFormSubmission(e) {
       }
     } catch (error) {
       submittedElements['form-submit'].disabled = false;
-      console.error('Error performing POST request:', error);
+      router.push({ name: 'Login' });
     }
   } catch (error) {
     // Handle errors
     submittedElements['form-submit'].disabled = false;
-    console.error('Error performing POST request:', error);
+    window.scrollTo(0, 0);
+    if (error.code == 'ERR_NETWORK') {
+      console.log('Network error');
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      console.error('Onboarding error');
+      onboardingError.value = true;
+      return;
+    }
   }
 }
 </script>
