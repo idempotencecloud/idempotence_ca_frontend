@@ -14,6 +14,7 @@ import CertificatesView from '../views/control-plane/CertificatesView.vue';
 import ActiveConnections from '../views/control-plane/certificates/ActiveConnections.vue';
 import ConnectionCertificates from '../views/control-plane/certificates/ConnectionCertificates.vue';
 import APICredentials from '../views/control-plane/APICredentials.vue';
+import NotFound from '../views/PathNotFound.vue';
 
 // Define your routes
 const routes = [
@@ -46,6 +47,7 @@ const routes = [
     ],
   },
   { name: 'Login', path: '/', component: LoginForm },
+  { path: '/:pathMatch(.*)*', component: NotFound },
 ];
 
 // Create the router instance
