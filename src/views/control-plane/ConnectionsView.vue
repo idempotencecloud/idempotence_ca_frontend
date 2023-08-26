@@ -1,4 +1,32 @@
 <template>
+  <div v-if="requestError" class="rounded-md bg-red-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">
+          We failed to process your request, please try again later.
+        </h3>
+      </div>
+    </div>
+  </div>
+  <div v-if="networkError" class="rounded-md bg-yellow-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+        <div class="mt-2 text-sm text-yellow-700">
+          <p>
+            We could not connect to the network. Please check your network connection and try again.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <h1 v-if="data.caConnectionsPendingYourApproval.length > 0" class="leading-20">
     Connections Awaiting Your Approval
   </h1>
@@ -85,6 +113,34 @@
       class="fixed bg-black bg-opacity-50 inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto"
     >
       <div class="relative bg-white w-1/2 md:w-1/3 mx-auto p-8 rounded-lg shadow-lg">
+        <div v-if="requestErrorDialog" class="rounded-md bg-red-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                We failed to process your request, please check your request and try again.
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div v-if="networkErrorDialog" class="rounded-md bg-yellow-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>
+                  We could not connect to the network. Please check your network connection and try
+                  again.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <slot
           ><form
             action="#"
@@ -172,10 +228,17 @@ import { watch } from 'vue';
 import { useStore } from 'vuex';
 import processConnections from '../../helpers/connectionResolver';
 import parseFormElements from '@/helpers/formParser.js';
+import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 const store = useStore();
 
 import { useRoute } from 'vue-router';
 const route = useRoute();
+
+const requestError = ref(false);
+const networkError = ref(false);
+
+const requestErrorDialog = ref(false);
+const networkErrorDialog = ref(false);
 
 const action = route.params.action;
 
@@ -187,40 +250,98 @@ const data = ref({
 const showModal = ref(action == 'send-connection');
 
 async function acceptConnection(connection) {
-  await httpClient.post('/connection/accept', {
-    connectionId: connection.ID,
-  });
-  loadPendingConnections(store.state.agent);
+  requestError.value = false;
+  networkError.value = false;
+  try {
+    await httpClient.post('/connection/accept', {
+      connectionId: connection.ID,
+    });
+    loadPendingConnections(store.state.agent);
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestError.value = true;
+      return;
+    }
+  }
 }
 
 async function sendConnectionRequest(e) {
+  requestErrorDialog.value = false;
+  networkErrorDialog.value = false;
   const submittedElements = {};
   const submittedInfo = {};
   parseFormElements(e.target, submittedInfo, submittedElements);
+  submittedElements['form-submit'].disabled = true;
   console.log(submittedInfo);
-  await httpClient.post('/connection', submittedInfo);
-  showModal.value = false;
-  loadPendingConnections(store.state.agent);
+  try {
+    await httpClient.post('/connection', submittedInfo);
+    showModal.value = false;
+    loadPendingConnections(store.state.agent);
+    submittedElements['form-submit'].disabled = false;
+  } catch (error) {
+    submittedElements['form-submit'].disabled = false;
+    if (error.code == 'ERR_NETWORK') {
+      networkErrorDialog.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestErrorDialog.value = true;
+      return;
+    }
+  }
 }
 
 async function declineConnection(connection) {
-  await httpClient.post('/connection/decline', {
-    connectionId: connection.ID,
-  });
-  loadPendingConnections(store.state.agent);
+  requestError.value = false;
+  networkError.value = false;
+  try {
+    await httpClient.post('/connection/decline', {
+      connectionId: connection.ID,
+    });
+    loadPendingConnections(store.state.agent);
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestError.value = true;
+      return;
+    }
+  }
 }
 
 async function loadPendingConnections(agent) {
-  if (agent == null) return;
-  const response = await httpClient.get('/connections/pending');
-  console.log(response.data);
-  if (response.data.caConnectionsPendingYourApproval) {
-    processConnections(agent, response.data.caConnectionsPendingYourApproval);
-    data.value.caConnectionsPendingYourApproval = response.data.caConnectionsPendingYourApproval;
+  requestError.value = false;
+  networkError.value = false;
+  if (agent == null) {
+    return;
   }
-  if (response.data.caConnectionsPendingTheirApproval) {
-    processConnections(agent, response.data.caConnectionsPendingTheirApproval);
-    data.value.caConnectionsPendingTheirApproval = response.data.caConnectionsPendingTheirApproval;
+  try {
+    const response = await httpClient.get('/connections/pending');
+    console.log(response.data);
+    if (response.data.caConnectionsPendingYourApproval) {
+      processConnections(agent, response.data.caConnectionsPendingYourApproval);
+      data.value.caConnectionsPendingYourApproval = response.data.caConnectionsPendingYourApproval;
+    }
+    if (response.data.caConnectionsPendingTheirApproval) {
+      processConnections(agent, response.data.caConnectionsPendingTheirApproval);
+      data.value.caConnectionsPendingTheirApproval =
+        response.data.caConnectionsPendingTheirApproval;
+    }
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestError.value = true;
+      return;
+    }
   }
 }
 
