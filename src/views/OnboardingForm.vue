@@ -108,7 +108,7 @@ async function companyFormSubmission(e) {
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         console.log('POST request successful:', response.data);
-        router.push({ name: 'ControlPlane' });
+        router.push('/control-plane');
       } else {
         router.push({ name: 'Login' });
       }
