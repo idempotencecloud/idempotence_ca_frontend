@@ -6,7 +6,7 @@
       </div>
       <div class="ml-3">
         <h3 class="text-sm font-medium text-red-800">
-          We failed to load your API credentials, please try again later.
+          We failed to process your request, please check your request and try again.
         </h3>
       </div>
     </div>
@@ -289,10 +289,21 @@ async function createNewAPICredentials(e) {
 }
 async function revokeCredential(key, id) {
   if (confirm(`Are you sure you want to revoke API Key: ${key}?`)) {
-    await httpClient.post(`/api-credential/revoke`, {
-      apiCredentialId: id,
-    });
-    loadAPICredentials();
+    try {
+      await httpClient.post(`/api-credential/revoke`, {
+        apiCredentialId: id,
+      });
+      loadAPICredentials();
+    } catch (error) {
+      if (error.code == 'ERR_NETWORK') {
+        networkError.value = true;
+        return;
+      }
+      if (error.code == 'ERR_BAD_REQUEST') {
+        requestError.value = true;
+        return;
+      }
+    }
   }
 }
 </script>
