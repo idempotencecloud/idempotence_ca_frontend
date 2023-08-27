@@ -18,36 +18,107 @@ import NotFound from '../views/PathNotFound.vue';
 
 // Define your routes
 const routes = [
-  { name: 'Login', path: '/', component: LoginForm },
-  { name: 'Signup', path: '/signup', component: SignupForm },
-  { name: 'Onboard', path: '/onboard/:onboarding_token/:email/:mode', component: OnboardingForm },
+  {
+    name: 'Login',
+    path: '/',
+    component: LoginForm,
+    meta: {
+      title: 'Idempotence CA - Login',
+    },
+  },
+  {
+    name: 'Signup',
+    path: '/signup',
+    component: SignupForm,
+    meta: {
+      title: 'Idempotence CA - New Account Signup',
+    },
+  },
+  {
+    name: 'Onboard',
+    path: '/onboard/:onboarding_token/:email/:mode',
+    component: OnboardingForm,
+    meta: {
+      title: 'Idempotence CA - Onboarding',
+    },
+  },
   {
     name: 'DeclineInvitation',
     path: '/decline-invite/:onboarding_token/:email',
     component: DeclineInvitationForm,
+    meta: {
+      title: 'Idempotence CA - Decline Company Invitation',
+    },
   },
   {
     name: 'ControlPlane',
     path: '/control-plane',
     component: ControlPlane,
     children: [
-      { path: '', component: ControlPlaneView }, // Default child route
-      { path: 'connections', component: ConnectionsView },
-      { path: 'connections/:action', component: ConnectionsView },
-      { path: 'organization', component: OrganizationView },
+      {
+        path: '',
+        component: ControlPlaneView,
+        meta: {
+          title: 'Idempotence CA - Welcome',
+        },
+      }, // Default child route
+      {
+        path: 'connections',
+        component: ConnectionsView,
+        meta: {
+          title: 'Idempotence CA - Connections',
+        },
+      },
+      {
+        path: 'connections/:action',
+        component: ConnectionsView,
+        meta: {
+          title: 'Idempotence CA - Connections',
+        },
+      },
+      {
+        path: 'organization',
+        component: OrganizationView,
+        meta: {
+          title: 'Idempotence CA - Organization Management',
+        },
+      },
       {
         path: 'certificates',
         component: CertificatesView,
         children: [
-          { path: '', component: ActiveConnections },
-          { path: ':connection_id', component: ConnectionCertificates },
+          {
+            path: '',
+            component: ActiveConnections,
+            meta: {
+              title: 'Idempotence CA - Certificates Connections',
+            },
+          },
+          {
+            path: ':connection_id',
+            component: ConnectionCertificates,
+            meta: {
+              title: 'Idempotence CA - Connection Certificates',
+            },
+          },
         ],
       },
-      { path: 'api-credentials', component: APICredentials },
+      {
+        path: 'api-credentials',
+        component: APICredentials,
+        meta: {
+          title: 'Idempotence CA - API Credentials',
+        },
+      },
     ],
   },
-  { name: 'Login', path: '/', component: LoginForm },
-  { path: '/:pathMatch(.*)*', component: NotFound },
+  {
+    path: '/:pathMatch(.*)*',
+    component: NotFound,
+    meta: {
+      title: 'Idempotence CA - Area not found',
+    },
+  },
 ];
 
 // Create the router instance
