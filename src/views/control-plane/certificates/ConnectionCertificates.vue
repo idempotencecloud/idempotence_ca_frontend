@@ -1,4 +1,32 @@
 <template>
+  <div v-if="requestError" class="rounded-md bg-red-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">
+          We failed to process your request, please try again later.
+        </h3>
+      </div>
+    </div>
+  </div>
+  <div v-if="networkError" class="rounded-md bg-yellow-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+        <div class="mt-2 text-sm text-yellow-700">
+          <p>
+            We could not connect to the network. Please check your network connection and try again.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <button @click="openModal" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
     Sign New Certificate
   </button>
@@ -28,6 +56,34 @@
       class="fixed bg-black bg-opacity-50 inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto"
     >
       <div class="relative bg-white w-1/2 md:w-1/3 mx-auto p-8 rounded-lg shadow-lg">
+        <div v-if="requestErrorDialog" class="rounded-md bg-red-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                We failed to process your request, please check your request and try again.
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div v-if="networkErrorDialog" class="rounded-md bg-yellow-50 p-4 mb-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>
+                  We could not connect to the network. Please check your network connection and try
+                  again.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <slot
           ><form
             action="#"
@@ -132,6 +188,7 @@ import { useRoute } from 'vue-router';
 import httpClient from '@/http-service';
 import downloadFile from '@/helpers/fileDownload.js';
 import parseFormElements from '@/helpers/formParser.js';
+import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 
 const route = useRoute();
 const connection_id = route.params.connection_id;
@@ -141,24 +198,56 @@ const data = ref({
   certificates: [],
 });
 
+const requestError = ref(false);
+const networkError = ref(false);
+
+const requestErrorDialog = ref(false);
+const networkErrorDialog = ref(false);
+
 async function loadConnectionCertificates() {
-  const response = await httpClient.get(`/connection/${connection_id}/certificates`);
-  data.value.certificates = response.data.certificates;
+  requestError.value = false;
+  networkError.value = false;
+  try {
+    const response = await httpClient.get(`/connection/${connection_id}/certificates`);
+    data.value.certificates = response.data.certificates;
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestError.value = true;
+      return;
+    }
+  }
 }
 
 async function downloadPEMFiles(certificate) {
-  const response = await httpClient.get(`/certificate/${certificate.certificateId}`);
-  downloadFile(
-    `${response.data.certificate.certificateName}.crt`,
-    response.data.certificate.certificatePEM
-  );
-  if (response.data.certificate.privateKeyPEM)
+  requestError.value = false;
+  networkError.value = false;
+  try {
+    const response = await httpClient.get(`/certificate/${certificate.certificateId}`);
     downloadFile(
-      `${response.data.certificate.certificateName}.key`,
-      response.data.certificate.privateKeyPEM
+      `${response.data.certificate.certificateName}.crt`,
+      response.data.certificate.certificatePEM
     );
-  const certBundle = response.data.intermediateCA + response.data.rootCA;
-  downloadFile(`${response.data.certificate.certificateName} CA Bundle.crt`, certBundle);
+    if (response.data.certificate.privateKeyPEM)
+      downloadFile(
+        `${response.data.certificate.certificateName}.key`,
+        response.data.certificate.privateKeyPEM
+      );
+    const certBundle = response.data.intermediateCA + response.data.rootCA;
+    downloadFile(`${response.data.certificate.certificateName} CA Bundle.crt`, certBundle);
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestError.value = true;
+      return;
+    }
+  }
 }
 
 loadConnectionCertificates();
@@ -169,21 +258,39 @@ const closeModal = function () {
   showModal.value = false;
 };
 const openModal = function () {
+  requestErrorDialog.value = false;
+  networkErrorDialog.value = false;
   showModal.value = true;
 };
 async function signNewCertificate(e) {
+  requestErrorDialog.value = false;
+  networkErrorDialog.value = false;
   const submittedElements = {};
   const submittedInfo = {};
   parseFormElements(e.target, submittedInfo, submittedElements);
+  submittedElements['form-submit'].disabled = true;
   const dnsNames = submittedInfo.dnsNames.split(/,\s*/g);
-  await httpClient.post(`/connection/certificate`, {
-    certificateName: submittedInfo.certificateName,
-    parentConnectionID: parseInt(connection_id, 10),
-    commonName: submittedInfo.commonName,
-    dnsNames: dnsNames,
-  });
-  loadConnectionCertificates();
-  showModal.value = false;
+  try {
+    await httpClient.post(`/connection/certificate`, {
+      certificateName: submittedInfo.certificateName,
+      parentConnectionID: parseInt(connection_id, 10),
+      commonName: submittedInfo.commonName,
+      dnsNames: dnsNames,
+    });
+    submittedElements['form-submit'].disabled = false;
+    loadConnectionCertificates();
+    showModal.value = false;
+  } catch (error) {
+    submittedElements['form-submit'].disabled = false;
+    if (error.code == 'ERR_NETWORK') {
+      networkErrorDialog.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestErrorDialog.value = true;
+      return;
+    }
+  }
 }
 </script>
 
