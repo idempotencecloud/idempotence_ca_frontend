@@ -1,8 +1,13 @@
 import axios from 'axios';
 import router from './router';
 
+let baseURL = 'http://localhost:8080';
+if (!window.location.toString().includes('http://localhost')) {
+  baseURL = 'https://api.ca.idempotence.io';
+}
+
 const httpClient = axios.create({
-  baseURL: 'http://localhost:8080', // Replace with your API base URL
+  baseURL, // Replace with your API base URL
 });
 
 httpClient.interceptors.request.use((config) => {
