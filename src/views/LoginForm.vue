@@ -133,7 +133,7 @@
         <a
           target="_blank"
           class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-          href="https://calendly.com/idempotence/initial-contact?month=2023-08"
+          href="https://calendly.com/idempotence/initial-contact"
           >Schedule On-premise Deployment</a
         >
       </p>
