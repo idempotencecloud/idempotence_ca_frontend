@@ -127,4 +127,8 @@ const router = createRouter({
   routes,
 });
 
+router.beforeResolve((to) => {
+  document.title = to.meta.title;
+});
+
 export default router;
