@@ -1,4 +1,31 @@
 <template>
+  <div v-if="requestError" class="rounded-md bg-red-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">
+          We failed to process your request, please try again later.
+        </h3>
+      </div>
+    </div>
+  </div>
+  <div v-if="networkError" class="rounded-md bg-yellow-50 p-4 mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-yellow-800">Network connection error</h3>
+        <div class="mt-2 text-sm text-yellow-700">
+          <p>
+            We could not connect to the network. Please check your network connection and try again.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
   <h1 class="leading-20">Active Certificate Connections</h1>
   <div v-if="data.activeConnections.length == 0" class="text-center">
     <svg
@@ -101,11 +128,16 @@ import { ref } from 'vue';
 import { watch } from 'vue';
 import { useStore } from 'vuex';
 import processConnections from '@/helpers/connectionResolver';
+import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+
 const store = useStore();
 
 const data = ref({
   activeConnections: [],
 });
+
+const requestError = ref(false);
+const networkError = ref(false);
 
 const copyToClipboard = (text) => {
   navigator.clipboard
@@ -125,10 +157,23 @@ const loadCertificates = (id) => {
 const diconnectConnection = async (connection) => {
   const message = `Are you sure you want to disconnect from ${connection.to_agent.emailAddress}?`;
   if (confirm(message)) {
-    await httpClient.post('/connection/disconnect', {
-      connectionId: connection.ID,
-    });
-    loadActiveConnections(store.state.agent);
+    networkError.value = false;
+    requestError.value = false;
+    try {
+      await httpClient.post('/connection/disconnect', {
+        connectionId: connection.ID,
+      });
+      loadActiveConnections(store.state.agent);
+    } catch (error) {
+      if (error.code == 'ERR_NETWORK') {
+        networkError.value = true;
+        return;
+      }
+      if (error.code == 'ERR_BAD_REQUEST') {
+        requestError.value = true;
+        return;
+      }
+    }
   }
 };
 
@@ -145,14 +190,27 @@ async function loadActiveConnections(agent) {
   if (agent.agent.isAdministrator) {
     path = '/connections/company/active';
   }
-  const response = await httpClient.get(path);
+  networkError.value = false;
+  requestError.value = false;
+  try {
+    const response = await httpClient.get(path);
 
-  if (response.data.activeConnections) {
-    processConnections(agent, response.data.activeConnections);
-    data.value.activeConnections = response.data.activeConnections;
-    //data.value.activeConnections = [...data.value.activeConnections, ...data.value.activeConnections, ...data.value.activeConnections, ...data.value.activeConnections]
+    if (response.data.activeConnections) {
+      processConnections(agent, response.data.activeConnections);
+      data.value.activeConnections = response.data.activeConnections;
+      //data.value.activeConnections = [...data.value.activeConnections, ...data.value.activeConnections, ...data.value.activeConnections, ...data.value.activeConnections]
+    }
+    console.log(response.data.activeConnections);
+  } catch (error) {
+    if (error.code == 'ERR_NETWORK') {
+      networkError.value = true;
+      return;
+    }
+    if (error.code == 'ERR_BAD_REQUEST') {
+      requestError.value = true;
+      return;
+    }
   }
-  console.log(response.data.activeConnections);
 }
 watch(
   () => store.state.agent, // Replace 'someState' with the name of the state you want to watch
