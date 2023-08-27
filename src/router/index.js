@@ -23,7 +23,7 @@ const routes = [
     path: '/',
     component: LoginForm,
     meta: {
-      title: 'Idempotence CA - Login',
+      title: 'Idempotence CA - Sign in',
     },
   },
   {

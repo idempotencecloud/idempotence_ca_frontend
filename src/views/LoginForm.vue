@@ -51,10 +51,13 @@
         </div>
       </div>
     </div>
+    <img src="/logo-large.svg" alt="Idempotence Logo" id="logo-svg" />
+    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+      Idempotence CA, Certificate Management Simplified.
+    </h2>
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img src="/logo-large.svg" alt="Idempotence Logo" id="logo-svg" />
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        Sign in to your account
+      <h2 class="mt-10 text-center text-1xl font-bold leading-9 tracking-tight text-gray-900">
+        Sign in to your account.
       </h2>
     </div>
 
