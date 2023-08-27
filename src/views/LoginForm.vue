@@ -118,6 +118,22 @@
           >Register a new company</a
         >
       </p>
+      <p class="mt-10 text-center text-sm text-gray-500">
+        <a
+          target="_blank"
+          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+          href="https://api.ca.idempotence.io/api/v1/docs"
+          >API Documentation</a
+        >
+      </p>
+      <p class="mt-10 text-center text-sm text-gray-500">
+        <a
+          target="_blank"
+          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+          href="https://calendly.com/idempotence/initial-contact?month=2023-08"
+          >Schedule On-premise Deployment</a
+        >
+      </p>
     </div>
   </div>
 </template>
