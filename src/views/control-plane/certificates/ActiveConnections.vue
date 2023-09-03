@@ -114,12 +114,9 @@
 </template>
 
 <script setup>
-import {
-  XMarkIcon,
-  DocumentMagnifyingGlassIcon,
-  DocumentDuplicateIcon,
-  PaperAirplaneIcon,
-} from '@heroicons/vue/20/solid';
+import { XMarkIcon, DocumentMagnifyingGlassIcon, PaperAirplaneIcon } from '@heroicons/vue/20/solid';
+
+import { DocumentDuplicateIcon } from '@heroicons/vue/24/outline';
 
 import httpClient from '@/http-service';
 import router from '@/router';

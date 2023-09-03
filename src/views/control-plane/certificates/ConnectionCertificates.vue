@@ -34,6 +34,7 @@
   <table class="table-auto w-full border border-gray-400 mt-5">
     <thead>
       <tr>
+        <th class="px-4 py-2 bg-gray-500 text-gray-100 border border-gray-400">ID</th>
         <th class="px-4 py-2 bg-gray-500 text-gray-100 border border-gray-400">Certificate Name</th>
         <th class="px-4 py-2 bg-gray-500 text-gray-100 border border-gray-400">Expiration</th>
         <th class="px-4 py-2 bg-gray-500 text-gray-100 border border-gray-400"></th>
@@ -41,6 +42,13 @@
     </thead>
     <tbody>
       <tr v-for="certificate in data.certificates" :key="certificate.certificateId">
+        <td class="px-4 py-2 border border-gray-400">
+          <span
+            class="cursor-pointer inline-flex m-1 items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 hover:text-green-500 active:text-green-700 ring-1 ring-inset ring-green-600/20"
+            @click.prevent="copyToClipboard(certificate.certificateId)"
+            >{{ certificate.certificateId }} <DocumentDuplicateIcon class="h-4 w-4 ml-1"
+          /></span>
+        </td>
         <td class="px-4 py-2 border border-gray-400">{{ certificate.certificateName }}</td>
         <td class="px-4 py-2 border border-gray-400 text-right">{{ certificate.expiration }}</td>
         <td class="px-4 py-2 border border-gray-400 text-right">
@@ -188,7 +196,11 @@ import { useRoute } from 'vue-router';
 import httpClient from '@/http-service';
 import downloadFile from '@/helpers/fileDownload.js';
 import parseFormElements from '@/helpers/formParser.js';
-import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+import {
+  XCircleIcon,
+  ExclamationTriangleIcon,
+  DocumentDuplicateIcon,
+} from '@heroicons/vue/24/outline';
 
 const route = useRoute();
 const connection_id = route.params.connection_id;
@@ -203,6 +215,17 @@ const networkError = ref(false);
 
 const requestErrorDialog = ref(false);
 const networkErrorDialog = ref(false);
+
+const copyToClipboard = (text) => {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      console.log('Text copied to clipboard');
+    })
+    .catch((err) => {
+      console.error('Unable to copy text to clipboard:', err);
+    });
+};
 
 async function loadConnectionCertificates() {
   requestError.value = false;
