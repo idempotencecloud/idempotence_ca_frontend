@@ -111,7 +111,7 @@
         </div>
       </form>
 
-      <p class="mt-10 text-center text-sm text-gray-500">
+      <p class="mt-5 text-center text-sm text-gray-500">
         New to Idempotence CA?
         {{ ' ' }}
         <a
@@ -121,7 +121,7 @@
           >Register a new company</a
         >
       </p>
-      <p class="mt-10 text-center text-sm text-gray-500">
+      <p class="mt-5 text-center text-sm text-gray-500">
         <a
           target="_blank"
           class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
@@ -129,7 +129,7 @@
           >Product Overview</a
         >
       </p>
-      <p class="mt-10 text-center text-sm text-gray-500">
+      <p class="mt-5 text-center text-sm text-gray-500">
         <a
           target="_blank"
           class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
@@ -137,12 +137,28 @@
           >API Documentation</a
         >
       </p>
-      <p class="mt-10 text-center text-sm text-gray-500">
+      <p class="mt-5 text-center text-sm text-gray-500">
         <a
           target="_blank"
           class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           href="https://calendly.com/idempotence/initial-contact"
           >Schedule On-premise Deployment</a
+        >
+      </p>
+      <p class="mt-5 text-center text-sm text-gray-500">
+        <a
+          target="_blank"
+          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+          href="/docs/EULA.pdf"
+          >End User License Agreement</a
+        >
+      </p>
+      <p class="mt-5 text-center text-sm text-gray-500">
+        <a
+          target="_blank"
+          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+          href="/docs/PrivacyPolicy.pdf"
+          >Privacy Policy</a
         >
       </p>
     </div>
