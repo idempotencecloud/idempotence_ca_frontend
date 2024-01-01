@@ -125,6 +125,14 @@
         <a
           target="_blank"
           class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+          href="https://www.change.org/p/usps-in-person-identity-proofing-service"
+          >USPS IAL 3 Identity Proofing Petition</a
+        >
+      </p>
+      <p class="mt-5 text-center text-sm text-gray-500">
+        <a
+          target="_blank"
+          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           href="https://www.youtube.com/watch?v=WOHVIltC9Og"
           >Product Overview</a
         >
