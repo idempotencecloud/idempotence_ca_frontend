@@ -89,7 +89,7 @@
         <div class="-mt-px flex divide-x divide-gray-200">
           <div class="flex w-0 flex-1">
             <a
-              @click.prevent="loadCertificates(connection.ID)"
+              @click.prevent="loadCertificates(connection.ID, connection.signable)"
               href="#"
               class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold transition-colors text-gray-500 hover:text-green-500"
             >
@@ -147,8 +147,12 @@ const copyToClipboard = (text) => {
     });
 };
 
-const loadCertificates = (id) => {
-  router.push(`/control-plane/certificates/${id}`);
+const loadCertificates = (id, signable) => {
+  if (signable) {
+    router.push(`/control-plane/certificates/${id}/sign`);
+  } else {
+    router.push(`/control-plane/certificates/${id}/nosign`);
+  }
 };
 
 const diconnectConnection = async (connection) => {

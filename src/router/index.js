@@ -95,7 +95,7 @@ const routes = [
             },
           },
           {
-            path: ':connection_id',
+            path: ':connection_id/:mode',
             component: ConnectionCertificates,
             meta: {
               title: 'Idempotence CA - Connection Certificates',

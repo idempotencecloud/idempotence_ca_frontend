@@ -27,9 +27,15 @@
     </div>
   </div>
 
-  <button @click="openModal" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+  <button
+    v-if="mode"
+    @click="openModal"
+    class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+  >
     Sign New Certificate
   </button>
+
+  <p v-if="!mode">*Viewing in administrative readonly mode.</p>
 
   <table class="table-auto w-full border border-gray-400 mt-5">
     <thead>
@@ -204,6 +210,7 @@ import {
 
 const route = useRoute();
 const connection_id = route.params.connection_id;
+const mode = ref(route.params.mode == 'sign');
 console.log(connection_id);
 
 const data = ref({

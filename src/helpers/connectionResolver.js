@@ -15,6 +15,12 @@ function resolveReciprocalConnection(agent, connection) {
 function processConnections(agent, connections) {
   for (let connection of connections) {
     connection.to_agent = resolveReciprocalConnection(agent, connection);
+    connection.signable =
+      agent.agent.ID == connection.vertexOneCertificateAuthorityID ||
+      agent.agent.ID == connection.vertexTwoCertificateAuthorityID;
+    // console.log(agent.agent.ID);
+    // console.log(connection.vertexOneCertificateAuthorityID);
+    // console.log(connection.vertexTwoCertificateAuthorityID);
   }
 }
 
