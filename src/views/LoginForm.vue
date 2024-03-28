@@ -69,6 +69,7 @@
           >
           <div class="mt-2">
             <input
+              ref="email"
               id="email-address"
               name="email-address"
               type="email"
@@ -90,6 +91,7 @@
           </div>
           <div class="mt-2">
             <input
+              ref="password"
               id="password"
               name="password"
               type="password"
@@ -102,6 +104,7 @@
 
         <div>
           <button
+            ref="loginButton"
             id="form-submit"
             type="submit"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -110,6 +113,29 @@
           </button>
         </div>
       </form>
+
+      <p class="mt-5 text-center text-sm text-gray-500">
+        <span
+          class="cursor-pointer inline-flex m-1 items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 hover:text-yellow-500 active:text-yellow-700 ring-1 ring-inset ring-yellow-600/20"
+          @click.prevent="loginDemoAgent('carissakunze@lindgren.info')"
+          >Demo Agent #1 (Admin) Login <UserGroupIcon class="h-4 w-4 ml-1"
+        /></span>
+        <span
+          class="cursor-pointer inline-flex m-1 items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 hover:text-yellow-500 active:text-yellow-700 ring-1 ring-inset ring-yellow-600/20"
+          @click.prevent="loginDemoAgent('summerrutherford@nikolaus.name')"
+          >Demo Agent #2 (Admin) Login <UserGroupIcon class="h-4 w-4 ml-1"
+        /></span>
+        <span
+          class="cursor-pointer inline-flex m-1 items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 hover:text-yellow-500 active:text-yellow-700 ring-1 ring-inset ring-yellow-600/20"
+          @click.prevent="loginDemoAgent('tonycruickshank@dare.name')"
+          >Demo Agent #3 (Non-Admin) Login <UserGroupIcon class="h-4 w-4 ml-1"
+        /></span>
+        <span
+          class="cursor-pointer inline-flex m-1 items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 hover:text-yellow-500 active:text-yellow-700 ring-1 ring-inset ring-yellow-600/20"
+          @click.prevent="loginDemoAgent('stephonkeeling@homenick.biz')"
+          >Demo Agent #4 (Admin) Login <UserGroupIcon class="h-4 w-4 ml-1"
+        /></span>
+      </p>
 
       <p class="mt-5 text-center text-sm text-gray-500">
         New to Idempotence CA?
@@ -179,10 +205,20 @@ import httpClient from '../http-service';
 import router from '@/router';
 import { ref } from 'vue';
 
+import { UserGroupIcon } from '@heroicons/vue/20/solid';
 import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 
 const loginError = ref(false);
 const networkError = ref(false);
+const email = ref();
+const password = ref();
+const loginButton = ref();
+
+const loginDemoAgent = (loginId) => {
+  email.value.value = loginId;
+  password.value.value = 'tryme';
+  loginButton.value.click();
+};
 
 async function handleSignin(e) {
   let submittedInfo = {};
