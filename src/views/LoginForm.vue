@@ -117,12 +117,12 @@
       <p class="mt-5 text-center text-sm text-gray-500">
         <span
           class="cursor-pointer inline-flex m-1 items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 hover:text-yellow-500 active:text-yellow-700 ring-1 ring-inset ring-yellow-600/20"
-          @click.prevent="loginDemoAgent('carissakunze@lindgren.info')"
+          @click.prevent="loginDemoAgent('summerrutherford@nikolaus.name')"
           >Demo Agent #1 (Admin) Login <UserGroupIcon class="h-4 w-4 ml-1"
         /></span>
         <span
           class="cursor-pointer inline-flex m-1 items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 hover:text-yellow-500 active:text-yellow-700 ring-1 ring-inset ring-yellow-600/20"
-          @click.prevent="loginDemoAgent('summerrutherford@nikolaus.name')"
+          @click.prevent="loginDemoAgent('carissakunze@lindgren.info')"
           >Demo Agent #2 (Admin) Login <UserGroupIcon class="h-4 w-4 ml-1"
         /></span>
         <span
