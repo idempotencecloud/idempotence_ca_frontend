@@ -31,6 +31,13 @@
     Generate New API Credentials
   </button>
 
+  <a
+    target="_blank"
+    class="hover:text-blue-500 text-blue-600 ml-3"
+    href="https://api.ca.idempotence.io/api/v1/docs"
+    >API Documentation</a
+  >
+
   <table class="table-auto w-full border border-gray-400 mt-5">
     <thead>
       <tr>
