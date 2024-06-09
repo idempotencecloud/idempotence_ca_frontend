@@ -15,3 +15,10 @@ export default {
   // Component logic goes here
 };
 </script>
+
+<style>
+input,
+textarea {
+  outline: groove;
+}
+</style>
