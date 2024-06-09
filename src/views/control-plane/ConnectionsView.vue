@@ -90,7 +90,7 @@
       :key="connection.to_agent.email"
       class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
     >
-      <div class="flex-shrink-0">
+      <div class="flex-shrink-0 textClipping">
         {{ connection.to_agent.emailAddress }}
       </div>
       <div class="min-w-0 flex-1">
@@ -357,5 +357,10 @@ loadPendingConnections(store.state.agent);
 <style>
 .leading-20 {
   line-height: 4.25em;
+}
+.textClipping {
+  max-width: 50%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

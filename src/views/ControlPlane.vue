@@ -182,7 +182,7 @@
     </div>
 
     <main class="py-10 lg:pl-72">
-      <div class="px-4 sm:px-6 lg:px-8">
+      <div class="px-4 sm:px-6 lg:px-8 touch-scroll">
         <div v-if="requestError" class="rounded-md bg-red-50 p-4 mb-4">
           <div class="flex">
             <div class="flex-shrink-0">
@@ -338,3 +338,14 @@ const logoutAgent = () => {
 
 const sidebarOpen = ref(false);
 </script>
+
+<style>
+.touch-scroll {
+  margin-right: 1rem;
+  overflow: hidden;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+}
+</style>
