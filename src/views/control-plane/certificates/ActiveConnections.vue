@@ -56,7 +56,10 @@
       </button>
     </div>
   </div>
-  <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+  <ul
+    role="list"
+    class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 additionalPadding"
+  >
     <li
       v-for="connection in data.activeConnections"
       :key="connection.to_agent.email"
@@ -70,7 +73,7 @@
           <dt class="sr-only">Company</dt>
           <dd class="text-sm text-gray-500">{{ connection.to_agent.company.companyName }}</dd>
           <dt class="sr-only">Email</dt>
-          <dd class="text-sm text-gray-500">{{ connection.to_agent.emailAddress }}</dd>
+          <dd class="text-sm text-gray-500 textClipping">{{ connection.to_agent.emailAddress }}</dd>
           <dt class="sr-only">Identity</dt>
           <dd class="mt-3">
             <span
@@ -87,7 +90,7 @@
       </div>
       <div>
         <div class="-mt-px flex divide-x divide-gray-200">
-          <div class="flex w-0 flex-1">
+          <div class="flex w-0 flex-1 textClipping">
             <a
               @click.prevent="loadCertificates(connection.ID, connection.signable)"
               href="#"
@@ -97,7 +100,7 @@
               Certificates
             </a>
           </div>
-          <div class="-ml-px flex w-0 flex-1">
+          <div class="-ml-px flex w-0 flex-1 textClipping">
             <a
               @click.prevent="diconnectConnection(connection)"
               href="#"
@@ -225,5 +228,13 @@ loadActiveConnections(store.state.agent);
 <style>
 .leading-20 {
   line-height: 4.25em;
+}
+.additionalPadding {
+  padding-bottom: 1rem;
+}
+.textClipping {
+  max-width: 50%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

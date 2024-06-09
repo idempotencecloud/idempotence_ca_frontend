@@ -30,7 +30,7 @@
   <h1 v-if="data.caConnectionsPendingYourApproval.length > 0" class="leading-20">
     Connections Awaiting Your Approval
   </h1>
-  <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 addingPadding">
     <li
       v-for="connection in data.caConnectionsPendingYourApproval"
       :key="connection.to_agent.email"
@@ -43,7 +43,9 @@
               {{ connection.to_agent.firstName }} {{ connection.to_agent.lastName }}
             </h3>
           </div>
-          <p class="mt-1 truncate text-sm text-gray-500">{{ connection.to_agent.emailAddress }}</p>
+          <p class="mt-1 truncate text-sm text-gray-500 textClipping">
+            {{ connection.to_agent.emailAddress }}
+          </p>
         </div>
       </div>
       <div>
@@ -362,5 +364,8 @@ loadPendingConnections(store.state.agent);
   max-width: 50%;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.addingPadding {
+  padding-bottom: 1rem;
 }
 </style>
