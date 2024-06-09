@@ -322,6 +322,8 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
+const sidebarOpen = ref(false);
+
 const handleNavigationClick = (clickedItem) => {
   navigation.value.forEach((item) => {
     const current = item.path === clickedItem.path;
@@ -329,14 +331,13 @@ const handleNavigationClick = (clickedItem) => {
       router.push(item.path);
     }
   });
+  sidebarOpen.value = false;
 };
 
 const logoutAgent = () => {
   localStorage.setItem('token', '');
   window.location = '/';
 };
-
-const sidebarOpen = ref(false);
 </script>
 
 <style>
