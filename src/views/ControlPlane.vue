@@ -342,11 +342,8 @@ const logoutAgent = () => {
 
 <style>
 .touch-scroll {
-  margin-right: 1rem;
   overflow: hidden;
   overflow-x: scroll;
   -webkit-overflow-scrolling: touch;
-  padding-right: 1rem;
-  padding-bottom: 1rem;
 }
 </style>
