@@ -69,7 +69,7 @@
       v-if="showModal"
       class="fixed bg-black bg-opacity-50 inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto"
     >
-      <div class="relative bg-white w-1/2 md:w-1/3 mx-auto p-8 rounded-lg shadow-lg">
+      <div class="relative bg-white xl:w-1/3 lg:w-1/2 mx-auto p-8 rounded-lg shadow-lg">
         <div v-if="requestErrorDialog" class="rounded-md bg-red-50 p-4 mb-4">
           <div class="flex">
             <div class="flex-shrink-0">
@@ -197,7 +197,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineEmits } from 'vue';
 import { useRoute } from 'vue-router';
 import httpClient from '@/http-service';
 import downloadFile from '@/helpers/fileDownload.js';
@@ -284,13 +284,17 @@ loadConnectionCertificates();
 
 const showModal = ref(false);
 
+const emit = defineEmits(['modal-status-change']);
+
 const closeModal = function () {
   showModal.value = false;
+  emit('modal-status-change', showModal.value);
 };
 const openModal = function () {
   requestErrorDialog.value = false;
   networkErrorDialog.value = false;
   showModal.value = true;
+  emit('modal-status-change', showModal.value);
 };
 async function signNewCertificate(e) {
   requestErrorDialog.value = false;

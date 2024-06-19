@@ -114,7 +114,7 @@
       v-if="showModal"
       class="fixed bg-black bg-opacity-50 inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto"
     >
-      <div class="relative bg-white w-1/2 md:w-1/3 mx-auto p-8 rounded-lg shadow-lg">
+      <div class="relative bg-white xl:w-1/3 lg:w-1/2 mx-auto p-8 rounded-lg shadow-lg">
         <div v-if="requestErrorDialog" class="rounded-md bg-red-50 p-4 mb-4">
           <div class="flex">
             <div class="flex-shrink-0">

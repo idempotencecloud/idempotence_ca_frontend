@@ -68,7 +68,7 @@
       v-if="showModal"
       class="fixed bg-black bg-opacity-50 inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto"
     >
-      <div class="relative bg-white w-2/3 md:w-2/3 mx-auto p-8 rounded-lg shadow-lg">
+      <div class="relative bg-white xl:w-1/3 lg:w-2/3 mx-auto p-8 rounded-lg shadow-lg">
         <div v-if="requestErrorDialog" class="rounded-md bg-red-50 p-4 mb-4">
           <div class="flex">
             <div class="flex-shrink-0">
@@ -202,7 +202,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineEmits } from 'vue';
 import httpClient from '@/http-service';
 import parseFormElements from '@/helpers/formParser.js';
 import { DocumentDuplicateIcon } from '@heroicons/vue/20/solid';
@@ -255,8 +255,11 @@ loadAPICredentials();
 
 const showModal = ref(false);
 
+const emit = defineEmits(['modal-status-change']);
+
 const closeModal = function () {
   showModal.value = false;
+  emit('modal-status-change', showModal.value);
 };
 const openModal = function () {
   requestErrorDialog.value = false;
@@ -264,6 +267,7 @@ const openModal = function () {
   data.value.apiKey = '';
   data.value.apiSecret = '';
   showModal.value = true;
+  emit('modal-status-change', showModal.value);
 };
 async function createNewAPICredentials(e) {
   requestErrorDialog.value = false;
