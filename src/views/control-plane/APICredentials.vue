@@ -53,7 +53,19 @@
       <tr v-for="credential in data.credentials" :key="credential.credentialId">
         <td class="px-4 py-2 border border-gray-400">{{ credential.apiName }}</td>
         <td class="px-4 py-2 border border-gray-400">{{ credential.apiKey }}</td>
-        <td class="px-4 py-2 border border-gray-400 text-right">{{ credential.expiration }}</td>
+        <td class="px-4 py-2 border border-gray-400 text-right">
+          {{
+            new Intl.DateTimeFormat('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            }).format(credential.expiration)
+          }}
+        </td>
         <td class="px-4 py-2 border border-gray-400 text-center">
           <a href="#" @click.prevent="revokeCredential(credential.apiKey, credential.credentialId)"
             >Revoke</a
