@@ -66,7 +66,7 @@
               minute: '2-digit',
               second: '2-digit',
               hour12: true,
-            }).format(certificate.expiration)
+            }).format(new Date(certificate.expiration))
           }}
         </td>
         <td class="px-4 py-2 border border-gray-400 text-right">
