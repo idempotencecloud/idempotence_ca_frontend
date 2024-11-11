@@ -23,7 +23,7 @@ const routes = [
     path: '/',
     component: LoginForm,
     meta: {
-      title: 'Idempotence CA - Sign in',
+      title: 'idempotence℠ CA - Sign in',
     },
   },
   {
@@ -31,7 +31,7 @@ const routes = [
     path: '/signup',
     component: SignupForm,
     meta: {
-      title: 'Idempotence CA - New Account Signup',
+      title: 'idempotence℠ CA - New Account Signup',
     },
   },
   {
@@ -39,7 +39,7 @@ const routes = [
     path: '/onboard/:onboarding_token/:email/:mode',
     component: OnboardingForm,
     meta: {
-      title: 'Idempotence CA - Onboarding',
+      title: 'idempotence℠ CA - Onboarding',
     },
   },
   {
@@ -47,7 +47,7 @@ const routes = [
     path: '/decline-invite/:onboarding_token/:email',
     component: DeclineInvitationForm,
     meta: {
-      title: 'Idempotence CA - Decline Company Invitation',
+      title: 'idempotence℠ CA - Decline Company Invitation',
     },
   },
   {
@@ -59,28 +59,28 @@ const routes = [
         path: '',
         component: ControlPlaneView,
         meta: {
-          title: 'Idempotence CA - Welcome',
+          title: 'idempotence℠ CA - Welcome',
         },
       }, // Default child route
       {
         path: 'connections',
         component: ConnectionsView,
         meta: {
-          title: 'Idempotence CA - Connections',
+          title: 'idempotence℠ CA - Connections',
         },
       },
       {
         path: 'connections/:action',
         component: ConnectionsView,
         meta: {
-          title: 'Idempotence CA - Connections',
+          title: 'idempotence℠ CA - Connections',
         },
       },
       {
         path: 'organization',
         component: OrganizationView,
         meta: {
-          title: 'Idempotence CA - Organization Management',
+          title: 'idempotence℠ CA - Organization Management',
         },
       },
       {
@@ -91,14 +91,14 @@ const routes = [
             path: '',
             component: ActiveConnections,
             meta: {
-              title: 'Idempotence CA - Certificates Connections',
+              title: 'idempotence℠ CA - Certificates Connections',
             },
           },
           {
             path: ':connection_id/:mode',
             component: ConnectionCertificates,
             meta: {
-              title: 'Idempotence CA - Connection Certificates',
+              title: 'idempotence℠ CA - Connection Certificates',
             },
           },
         ],
@@ -107,7 +107,7 @@ const routes = [
         path: 'api-credentials',
         component: APICredentials,
         meta: {
-          title: 'Idempotence CA - API Credentials',
+          title: 'idempotence℠ CA - API Credentials',
         },
       },
     ],
@@ -116,7 +116,7 @@ const routes = [
     path: '/:pathMatch(.*)*',
     component: NotFound,
     meta: {
-      title: 'Idempotence CA - Area not found',
+      title: 'idempotence℠ CA - Area not found',
     },
   },
 ];
