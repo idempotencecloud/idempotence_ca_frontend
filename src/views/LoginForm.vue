@@ -51,7 +51,14 @@
         </div>
       </div>
     </div>
-    <img src="/logo-large.svg" alt="Idempotence Logo" id="logo-svg" />
+    <img
+      src="/logo.svg"
+      alt="Idempotence Logo"
+      id="logo-svg"
+      width="64"
+      height="48"
+      class="mx-auto"
+    />
     <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
       Idempotence&#x2120; CA, Certificate Management Simplified, Humanizing mTLS.
     </h2>
