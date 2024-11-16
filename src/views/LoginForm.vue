@@ -202,7 +202,7 @@
           >Privacy Policy</a
         >
       </p>
-      <p class="text-center">
+      <p class="text-center" style="line-height: 3.5rem">
         <img
           src="https://codecov.io/github/idempotencecloud/idempotence_ca/graph/badge.svg?token=SDLRQ9TZF9"
           class="inline-block align-baseline"
