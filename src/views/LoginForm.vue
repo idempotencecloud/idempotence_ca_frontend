@@ -202,6 +202,13 @@
           >Privacy Policy</a
         >
       </p>
+      <p class="text-center">
+        <img
+          src="https://codecov.io/github/idempotencecloud/idempotence_ca/graph/badge.svg?token=SDLRQ9TZF9"
+          class="inline-block align-baseline"
+          alt="Coverage Status"
+        />
+      </p>
     </div>
   </div>
 </template>
