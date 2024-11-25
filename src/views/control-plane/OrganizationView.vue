@@ -223,7 +223,7 @@ async function makeDisableUser(agent) {
     action = 'activate';
   }
   ///company/administrator
-  if (confirm(`Are you sure you want to deactivate ${emailAddress}?`)) {
+  if (confirm(`Are you sure you want to ${action} ${emailAddress}?`)) {
     try {
       await httpClient.patch(`/company/agent/${id}/${action}`);
       loadAgents();
