@@ -42,9 +42,28 @@
       v-for="agent in data.agents"
       :key="agent.ID"
       class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+      style="margin-bottom: 10px"
     >
       <div class="flex-shrink-0 textClipping">
         {{ agent.emailAddress }}
+        <br v-if="store.state?.agent?.agent?.isAdministrator" />
+        <Switch
+          v-if="
+            store.state?.agent?.agent?.isAdministrator && store.state?.agent?.agent?.ID != agent.ID
+          "
+          v-model="agent.active"
+          class="group relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+          :class="agent.active ? 'bg-blue-600' : 'bg-gray-200'"
+          role="checkbox"
+          aria-checked="false"
+          @click.prevent="makeDisableUser(agent)"
+        >
+          <span
+            aria-hidden="true"
+            class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+            :class="agent.active ? '-translate-x-2.5' : 'translate-x-2.5'"
+          ></span>
+        </Switch>
       </div>
       <div class="min-w-0 flex-1">
         <div class="focus:outline-none">
@@ -165,11 +184,13 @@
 <script setup>
 import { PlusIcon } from '@heroicons/vue/20/solid';
 
+import { Switch } from '@headlessui/vue';
 import httpClient from '@/http-service';
 import { ref } from 'vue';
 import parseFormElements from '@/helpers/formParser.js';
 
 import { XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+import { useStore } from 'vuex';
 
 const showModal = ref(false);
 
@@ -177,6 +198,7 @@ const data = ref({
   agents: [],
 });
 
+const store = useStore();
 const requestError = ref(false);
 const networkError = ref(false);
 
@@ -188,6 +210,37 @@ const openModal = function () {
   networkErrorDialog.value = false;
   showModal.value = true;
 };
+
+async function makeDisableUser(agent) {
+  const id = agent.ID;
+  const emailAddress = agent.emailAddress;
+  const localState = agent.active;
+  agent.active = !agent.active;
+  networkError.value = false;
+  requestError.value = false;
+  let action = 'deactivate';
+  if (agent.active) {
+    action = 'activate';
+  }
+  ///company/administrator
+  if (confirm(`Are you sure you want to deactivate ${emailAddress}?`)) {
+    try {
+      await httpClient.patch(`/company/agent/${id}/${action}`);
+      loadAgents();
+    } catch (error) {
+      if (error.code == 'ERR_NETWORK') {
+        networkError.value = true;
+        agent.active = localState;
+        return;
+      }
+      if (error.code == 'ERR_BAD_REQUEST') {
+        requestError.value = true;
+        agent.active = localState;
+        return;
+      }
+    }
+  }
+}
 
 async function makeAdministrator(emailAddress, id) {
   networkError.value = false;
