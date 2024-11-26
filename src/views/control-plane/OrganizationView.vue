@@ -225,7 +225,7 @@ async function makeDisableUser(agent) {
     agent.active = !agent.active;
     try {
       await httpClient.patch(`/company/agent/${id}/${action}`);
-      loadAgents();
+      //loadAgents();
     } catch (error) {
       if (error.code == 'ERR_NETWORK') {
         networkError.value = true;
