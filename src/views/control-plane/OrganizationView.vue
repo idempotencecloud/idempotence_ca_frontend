@@ -212,21 +212,20 @@ const openModal = function () {
 };
 
 async function makeDisableUser(agent) {
-  const id = agent.ID;
-  const emailAddress = agent.emailAddress;
-  const localState = agent.active;
-  agent.active = !agent.active;
-  networkError.value = false;
-  requestError.value = false;
-  let action = 'deactivate';
-  if (agent.active) {
-    action = 'activate';
-  }
-  ///company/administrator
   if (confirm(`Are you sure you want to ${action} ${emailAddress}?`)) {
+    const id = agent.ID;
+    const emailAddress = agent.emailAddress;
+    const localState = agent.active;
+    agent.active = !agent.active;
+    networkError.value = false;
+    requestError.value = false;
+    let action = 'deactivate';
+    if (agent.active) {
+      action = 'activate';
+    }
     try {
       await httpClient.patch(`/company/agent/${id}/${action}`);
-      loadAgents();
+      //loadAgents();
     } catch (error) {
       if (error.code == 'ERR_NETWORK') {
         networkError.value = true;
