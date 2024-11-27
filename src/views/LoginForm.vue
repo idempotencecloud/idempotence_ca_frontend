@@ -145,7 +145,7 @@
       </p>
 
       <p class="mt-5 text-center text-sm text-gray-500">
-        New to Idempotence CA℠?
+        New to Idempotence&#8480; CA?
         {{ ' ' }}
         <a
           href="#"
