@@ -98,7 +98,7 @@
             </div>
             <div class="ml-3">
               <h3 class="text-sm font-medium text-red-800">
-                {{ requestErrorMessage }}
+                {{ requestErrorDialogMessage }}
               </h3>
             </div>
           </div>
@@ -275,8 +275,7 @@ async function addCompanyAgent(e) {
   parseFormElements(e.target, submittedInfo, submittedElements);
   submittedElements['form-submit'].disabled = true;
   try {
-    const response = await httpClient.post('/agent/add', submittedInfo);
-    requestErrorMessage.value = response.data.message;
+    await httpClient.post('/agent/add', submittedInfo);
     //console.log(response.data);
     submittedElements['form-submit'].disabled = false;
     showModal.value = false;
