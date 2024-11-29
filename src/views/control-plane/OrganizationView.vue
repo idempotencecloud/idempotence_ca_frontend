@@ -98,7 +98,7 @@
             </div>
             <div class="ml-3">
               <h3 class="text-sm font-medium text-red-800">
-                We failed to process your request, please check your request and try again.
+                {{ requestErrorMessage }}
               </h3>
             </div>
           </div>
@@ -202,6 +202,9 @@ const store = useStore();
 const requestError = ref(false);
 const networkError = ref(false);
 
+const requestErrorMessageDefault =
+  'We failed to process your request, please check your request and try again.';
+const requestErrorDialogMessage = ref(requestErrorMessageDefault);
 const requestErrorDialog = ref(false);
 const networkErrorDialog = ref(false);
 
@@ -273,7 +276,8 @@ async function addCompanyAgent(e) {
   submittedElements['form-submit'].disabled = true;
   try {
     const response = await httpClient.post('/agent/add', submittedInfo);
-    console.log(response.data);
+    requestErrorMessage.value = response.data.message;
+    //console.log(response.data);
     submittedElements['form-submit'].disabled = false;
     showModal.value = false;
     loadAgents();
@@ -284,6 +288,7 @@ async function addCompanyAgent(e) {
       return;
     }
     if (error.code == 'ERR_BAD_REQUEST') {
+      requestErrorDialogMessage.value = error.response.data.message;
       requestErrorDialog.value = true;
       return;
     }
