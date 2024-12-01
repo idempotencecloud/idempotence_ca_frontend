@@ -27,9 +27,18 @@
     </div>
   </div>
 
-  <h1 v-if="data.caConnectionsPendingYourApproval.length > 0" class="leading-20">
+  <h1 class="leading-20">Connections</h1>
+  <p
+    v-if="
+      data.caConnectionsPendingYourApproval.length == 0 &&
+      data.caConnectionsPendingTheirApproval.length == 0
+    "
+  >
+    There are no connection request pending an approval from you or others.
+  </p>
+  <h2 v-if="data.caConnectionsPendingYourApproval.length > 0" class="leading-20">
     Connections Awaiting Your Approval
-  </h1>
+  </h2>
   <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 addingPadding">
     <li
       v-for="connection in data.caConnectionsPendingYourApproval"
@@ -74,8 +83,6 @@
       </div>
     </li>
   </ul>
-
-  <h1 class="leading-20">Connections Awaiting Approval</h1>
   <div>
     <button
       @click.prevent="showModal = true"
@@ -86,10 +93,14 @@
       Send Connection Requests
     </button>
   </div>
+  <h2 v-if="data.caConnectionsPendingTheirApproval.length > 0" class="leading-20">
+    Connections Awaiting Other&#x27;s Approval
+  </h2>
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-6">
     <div
       v-for="connection in data.caConnectionsPendingTheirApproval"
       :key="connection.to_agent.email"
+      style="margin-bottom: 10px"
       class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
     >
       <div class="flex-shrink-0 textClipping">
