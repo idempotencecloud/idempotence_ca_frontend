@@ -136,7 +136,7 @@
                   <small class="text-gray-400"
                     >Add substring &quot;client&quot; to the certificate name to provision a x509
                     client authentication certificate instead of the default x509 server
-                    authentication.</small
+                    authentication certificate.</small
                   >
                 </div>
               </div>
