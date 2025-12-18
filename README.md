@@ -36,7 +36,7 @@ Usage Restrictions While the source code is provided under an open-source licens
 
 3. _No Implied Endorsement:_ You may not use the project's assets in any way that suggests an official affiliation with, or endorsement by, the original authors.
 
-_The "Source-Only" Rule_ The visual assets and names included in this repository are provided solely for the purpose of compiling the software as-is. Any use of these assets beyond the functional execution of the original source code is strictly prohibited.
+_The "Source-Only" Rule_: The visual assets and names included in this repository are provided solely for the purpose of compiling the software as-is. Any use of these assets beyond the functional execution of the original source code is strictly prohibited.
 
 ### Customize configuration
 
